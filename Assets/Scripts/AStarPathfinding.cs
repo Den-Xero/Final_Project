@@ -95,7 +95,19 @@ public class AStarPathfinding : MonoBehaviour
         GoalHex = new PathMarker(goalHex, 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
 
 
+        Open.Clear();
+        Closed.Clear();
+        Open.Add(StartHex);
+        LastPos = StartHex;
+
     }
+
+
+    void PathFinding(PathMarker ThisHex)
+    {
+
+    }
+
     // Start is called before the first frame update
     void Start()
     {
