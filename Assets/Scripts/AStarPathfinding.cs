@@ -5,14 +5,14 @@ using System.Linq;
 
 public class PathMarker
 {
-    public Vector3 HexLocation;
+    public Vector2Int HexLocation;
     public float G;
     public float H;
     public float F;
     public GameObject Marker;
     public PathMarker Parent;
 
-    public PathMarker(Vector3 hexLocation, float g, float h, float f, GameObject marker, PathMarker parent)
+    public PathMarker(Vector2Int hexLocation, float g, float h, float f, GameObject marker, PathMarker parent)
     {
         HexLocation = hexLocation;
         G = g;
@@ -79,20 +79,20 @@ public class AStarPathfinding : MonoBehaviour
         Done = false;
         RemoveAllMarkers();
 
-        List<Vector3> hex = new List<Vector3>();
+        List<Vector2Int> hex = new List<Vector2Int>();
         for (int y = 0; y < m_GameMap.GridSize.y; y++)
             for (int x = 0; x < m_GameMap.GridSize.x; x++)
             {
-                hex.Add(new Vector3(x, y));
+                hex.Add(new Vector2Int(x, y));
             }
 
         //Randomly pick a hex to have as start location.
-        Vector3 startHex = new Vector3(0,0,0);
-        StartHex = new PathMarker(startHex, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[0].x, hex[0].y));
+        StartHex = new PathMarker(new Vector2Int(hex[0].x, hex[0].y), 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
         //Randomly pick a hex to have as start location.
-        Vector3 goalHex = new Vector3(0, 0, 0);
-        GoalHex = new PathMarker(goalHex, 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
+        Vector3 goalHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[0].x, hex[0].y));
+        GoalHex = new PathMarker(new Vector2Int(hex[1].x, hex[1].y), 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
 
 
         Open.Clear();
@@ -105,7 +105,70 @@ public class AStarPathfinding : MonoBehaviour
 
     void PathFinding(PathMarker ThisHex)
     {
+        if (ThisHex.Equals(GoalHex)) { Done = true; return; } // goal has been reached.
 
+        if(!m_GameMap.FlatTop)
+        {
+            if(ThisHex.HexLocation.y % 2 == 0)
+            {
+                foreach (Vector2Int dir in m_GameMap.PointTopOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if(neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                }
+                
+            }
+            else
+            {
+                foreach (Vector2Int dir in m_GameMap.PointTopNoOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                }
+            }
+        }
+        else
+        {
+            if (ThisHex.HexLocation.x % 2 == 0)
+            {
+                foreach (Vector2Int dir in m_GameMap.FlatTopOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                }
+            }
+            else
+            {
+                foreach (Vector2Int dir in m_GameMap.FlatTopNoOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                }
+            }
+        }
+
+
+    }
+
+    bool IsInClosed(Vector2Int pos)
+    {
+        foreach(PathMarker p in Closed)
+        {
+            if(p.HexLocation == pos) return true;
+        }
+        return false;
     }
 
     // Start is called before the first frame update

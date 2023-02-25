@@ -29,6 +29,40 @@ public class GameMap : MonoBehaviour
         DrawGrid();
     }
 
+    public List<Vector2Int> PointTopNoOffsetNeighbours = new List<Vector2Int>() { 
+        new Vector2Int(0,1),
+        new Vector2Int(-1,1),
+        new Vector2Int(-1,0),
+        new Vector2Int(-1,-1),
+        new Vector2Int(0,-1),
+        new Vector2Int(1,0)};
+
+    public List<Vector2Int> PointTopOffsetNeighbours = new List<Vector2Int>() {
+        new Vector2Int(1,1),
+        new Vector2Int(0,1),
+        new Vector2Int(-1,0),
+        new Vector2Int(0,-1),
+        new Vector2Int(1,-1),
+        new Vector2Int(1,0)};
+
+    public List<Vector2Int> FlatTopNoOffsetNeighbours = new List<Vector2Int>() {
+        new Vector2Int(0,1),
+        new Vector2Int(-1,1),
+        new Vector2Int(-1,0),
+        new Vector2Int(0,-1),
+        new Vector2Int(1,0),
+        new Vector2Int(1,1)};
+
+    public List<Vector2Int> FlatTopOffsetNeighbours = new List<Vector2Int>() {
+        new Vector2Int(0,1),
+        new Vector2Int(-1,0),
+        new Vector2Int(-1,-1),
+        new Vector2Int(0,-1),
+        new Vector2Int(1,-1),
+        new Vector2Int(1,0)};
+
+
+
     void GetNeighbours(Hex hex)
     {
         List<Hex> Neighbours = new List<Hex>();
@@ -64,13 +98,14 @@ public class GameMap : MonoBehaviour
                 GameObject Tile = new GameObject($"Hex {x},{y}", typeof(Hex));
                 Tile.transform.position = GetPositionFromCoordinate(new Vector2Int(x, y));
 
-                Hex HexDrawer = Tile.GetComponent<Hex>();
-                HexDrawer.FlatTop = FlatTop;
-                HexDrawer.Height = Height;
-                HexDrawer.OuterSize = OuterSize;
-                HexDrawer.InnerSize = InnerSize;
-                HexDrawer.SetMesh(Mat[RandomNumber]);
-                HexDrawer.DrawMesh();
+                Hex Hex = Tile.GetComponent<Hex>();
+                Hex.FlatTop = FlatTop;
+                Hex.Height = Height;
+                Hex.OuterSize = OuterSize;
+                Hex.InnerSize = InnerSize;
+                Hex.Coords = new Vector2Int(x, y);
+                Hex.SetMesh(Mat[RandomNumber]);
+                Hex.DrawMesh();
 
                 
                 
@@ -107,7 +142,7 @@ public class GameMap : MonoBehaviour
             Offset = OffsetNeeded ? Width / 2 : 0;
 
             XPosition = (Column * HorizontalDistance) + Offset;
-            YPosition = (Row * VerticalDistance);
+            YPosition = Row * VerticalDistance;
         }
         else
         {

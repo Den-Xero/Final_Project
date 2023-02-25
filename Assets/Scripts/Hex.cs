@@ -24,10 +24,11 @@ public struct SideFaces
 [RequireComponent(typeof(MeshRenderer))]
 public class Hex : MonoBehaviour
 {
-    private Mesh m_Mesh;
-    private MeshFilter m_MeshFilter;
-    private MeshRenderer m_MeshRenderer;
-    private List<SideFaces> m_Faces;
+    Mesh m_Mesh;
+    MeshFilter m_MeshFilter;
+    MeshRenderer m_MeshRenderer;
+    List<SideFaces> m_Faces;
+    public Vector2Int Coords;
 
     public Material Mat;
     public void SetMesh(Material mat)
