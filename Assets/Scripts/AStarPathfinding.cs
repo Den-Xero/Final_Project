@@ -65,6 +65,27 @@ public class AStarPathfinding : MonoBehaviour
     PathMarker StartHex;
     PathMarker LastPos;
     bool Done = false;
+    bool Pathway = false;
+
+
+    static void ShuffleList(List<Vector2Int> list)
+    {
+        // Get the count of elements in the list
+        int count = list.Count;
+
+        // Iterate through the list from the last index to the second index
+        for (int i = count - 1; i > 0; i--)
+        {
+            // Generate a random index between 0 and i (inclusive)
+            int j = UnityEngine.Random.Range(0, i + 1);
+
+            // Swap the elements at indices i and j
+            Vector2Int temp = list[i];
+            list[i] = list[j];
+            list[j] = temp;
+        }
+    }
+
 
 
     void RemoveAllMarkers()
@@ -86,12 +107,13 @@ public class AStarPathfinding : MonoBehaviour
                 hex.Add(new Vector2Int(x, y));
             }
 
-        //Randomly pick a hex to have as start location.
+        //Suffles list then picks top hex to be the start location.
+        ShuffleList(hex);
         Vector3 startHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[0].x, hex[0].y));
         StartHex = new PathMarker(new Vector2Int(hex[0].x, hex[0].y), 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
-        //Randomly pick a hex to have as start location.
-        Vector3 goalHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[0].x, hex[0].y));
+        //picks second top hex to be the end location.
+        Vector3 goalHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[1].x, hex[1].y));
         GoalHex = new PathMarker(new Vector2Int(hex[1].x, hex[1].y), 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
 
 
@@ -106,7 +128,7 @@ public class AStarPathfinding : MonoBehaviour
     void PathFinding(PathMarker ThisHex)
     {
         if (ThisHex == null) return;
-        if (ThisHex.Equals(GoalHex)) { Done = true; return; } // goal has been reached.
+        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return; } // goal has been reached.
 
         if(!m_GameMap.FlatTop)
         {
@@ -123,6 +145,7 @@ public class AStarPathfinding : MonoBehaviour
                     float F = G + H;
 
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
 
                     //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
                     //Values[0].text = "G: " + G.ToString("0.00");
@@ -133,14 +156,7 @@ public class AStarPathfinding : MonoBehaviour
                         Open.Add(new PathMarker(neighbour, G, H, F, PathBlock, ThisHex));
 
                 }
-
-                Open = Open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
-                PathMarker pm = Open.ElementAt(0);
-                Closed.Add(pm);
-                Open.RemoveAt(0);
-                pm.Marker.GetComponent<Renderer>().material = ClosedMat;
-                LastPos = pm;
-
+                
             }
             else
             {
@@ -150,8 +166,23 @@ public class AStarPathfinding : MonoBehaviour
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
                     if (IsInClosed(neighbour)) continue;
 
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+
+                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
+                    //Values[0].text = "G: " + G.ToString("0.00");
+                    //Values[1].text = "H: " + H.ToString("0.00");
+                    //Values[2].text = "F: " + F.ToString("0.00");
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, PathBlock, ThisHex));
+
                 }
+                
             }
         }
         else
@@ -164,8 +195,23 @@ public class AStarPathfinding : MonoBehaviour
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
                     if (IsInClosed(neighbour)) continue;
 
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+
+                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
+                    //Values[0].text = "G: " + G.ToString("0.00");
+                    //Values[1].text = "H: " + H.ToString("0.00");
+                    //Values[2].text = "F: " + F.ToString("0.00");
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, PathBlock, ThisHex));
+
                 }
+                
             }
             else
             {
@@ -175,11 +221,31 @@ public class AStarPathfinding : MonoBehaviour
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
                     if (IsInClosed(neighbour)) continue;
 
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+
+                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
+                    //Values[0].text = "G: " + G.ToString("0.00");
+                    //Values[1].text = "H: " + H.ToString("0.00");
+                    //Values[2].text = "F: " + F.ToString("0.00");
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, PathBlock, ThisHex));
+
                 }
+                
             }
         }
-
+        Open = Open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
+        PathMarker pm = Open.ElementAt(0);
+        Closed.Add(pm);
+        Open.RemoveAt(0);
+        pm.Marker.GetComponent<Renderer>().material = ClosedMat;
+        LastPos = pm;
 
     }
 
@@ -219,7 +285,7 @@ public class AStarPathfinding : MonoBehaviour
         RemoveAllMarkers();
         PathMarker Marker = LastPos;
 
-        while (!StartHex.Equals(Marker) && Marker != null)
+        while (StartHex.HexLocation != Marker.HexLocation && Marker != null)
         {
             Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(Marker.HexLocation.x, Marker.HexLocation.y)), Quaternion.identity);
             Marker = Marker.Parent;
@@ -231,8 +297,9 @@ public class AStarPathfinding : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Return)) BeginSearch();
+        if (Input.GetKeyDown(KeyCode.A)) { BeginSearch(); Pathway = false; }
         if(Input.GetKeyDown(KeyCode.Space) && !Done) PathFinding(LastPos);
-        if (Input.GetKeyDown(KeyCode.P) && Done) GetPathway();
+        if(Done && !Pathway) {GetPathway(); Pathway = true; }
+        
     }
 }
