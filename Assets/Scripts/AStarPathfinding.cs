@@ -288,7 +288,12 @@ public class AStarPathfinding : MonoBehaviour
         while (StartHex.HexLocation != Marker.HexLocation && Marker != null)
         {
             Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(Marker.HexLocation.x, Marker.HexLocation.y)), Quaternion.identity);
+            Stack<GameObject> waypoint = new Stack<GameObject>();
+            //make stack of waypoints.
+            waypoint.Push(m_GameMap.WayPoint[0]);
             Marker = Marker.Parent;
+            
+            
         }
 
         Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(StartHex.HexLocation.x, StartHex.HexLocation.y)), Quaternion.identity);

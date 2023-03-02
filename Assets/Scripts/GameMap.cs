@@ -61,31 +61,7 @@ public class GameMap : MonoBehaviour
         new Vector2Int(1,-1),
         new Vector2Int(1,0)};
 
-
-
-    void GetNeighbours(Hex hex)
-    {
-        List<Hex> Neighbours = new List<Hex>();
-
-        Vector3Int[] NeighboursCoords = new Vector3Int[]
-        {
-            new Vector3Int(1, -1, 0),
-            new Vector3Int(1, 0, -1),
-            new Vector3Int(0, 1, -1),
-            new Vector3Int(-1, 1, 0),
-            new Vector3Int(-1, 0, 1),
-            new Vector3Int(0, -1, 1),
-        };
-
-        foreach(Vector3Int NeighboursCoord in NeighboursCoords)
-        {
-            Vector3 hexcoord = hex.transform.position;
-
-            //check if hex exists.
-        }
-
-    }
-
+    public List<GameObject> WayPoint = new List<GameObject>();
 
     public void DrawGrid()
     {
@@ -107,10 +83,13 @@ public class GameMap : MonoBehaviour
                 Hex.SetMesh(Mat[RandomNumber]);
                 Hex.DrawMesh();
 
-                
-                
 
                 Tile.transform.SetParent(transform, true);
+
+                GameObject waypoint = new GameObject($"WayPoint {x},{y}");
+                WayPoint.Add(waypoint);
+
+                waypoint.transform.SetParent(Tile.transform, true);
 
             }
         }
