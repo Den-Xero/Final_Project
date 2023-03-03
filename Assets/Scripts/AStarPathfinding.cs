@@ -63,10 +63,11 @@ public class AStarPathfinding : MonoBehaviour
 
     PathMarker GoalHex;
     PathMarker StartHex;
-    PathMarker LastPos;
-    bool Done = false;
-    bool Pathway = false;
-
+    public PathMarker LastPos;
+    public bool Done = false;
+    public bool Pathway = false;
+    public Stack<GameObject> waypoint = new Stack<GameObject>();
+    public Stack<Vector2Int> coords = new Stack<Vector2Int>();
 
     static void ShuffleList(List<Vector2Int> list)
     {
@@ -109,8 +110,8 @@ public class AStarPathfinding : MonoBehaviour
 
         //Suffles list then picks top hex to be the start location.
         ShuffleList(hex);
-        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[0].x, hex[0].y));
-        StartHex = new PathMarker(new Vector2Int(hex[0].x, hex[0].y), 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.PlayerCoords);
+        StartHex = new PathMarker(GameManager.Main.PlayerCoords, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
         //picks second top hex to be the end location.
         Vector3 goalHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[1].x, hex[1].y));
@@ -125,7 +126,7 @@ public class AStarPathfinding : MonoBehaviour
     }
 
 
-    void PathFinding(PathMarker ThisHex)
+    public void PathFinding(PathMarker ThisHex)
     {
         if (ThisHex == null) return;
         if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return; } // goal has been reached.
@@ -277,25 +278,28 @@ public class AStarPathfinding : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        BeginSearch(); 
+        Pathway = false;
     }
 
-    void GetPathway()
+    public void GetPathway()
     {
         RemoveAllMarkers();
         PathMarker Marker = LastPos;
+        waypoint.Clear();
 
         while (StartHex.HexLocation != Marker.HexLocation && Marker != null)
         {
             Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(Marker.HexLocation.x, Marker.HexLocation.y)), Quaternion.identity);
-            Stack<GameObject> waypoint = new Stack<GameObject>();
+            
             //make stack of waypoints.
-            waypoint.Push(m_GameMap.WayPoint[0]);
+            waypoint.Push(m_GameMap.FindWaypoint(Marker.HexLocation));
+            coords.Push(Marker.HexLocation);
             Marker = Marker.Parent;
             
             
         }
-
+        
         Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(StartHex.HexLocation.x, StartHex.HexLocation.y)), Quaternion.identity);
     }
 
@@ -303,8 +307,6 @@ public class AStarPathfinding : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.A)) { BeginSearch(); Pathway = false; }
-        if(Input.GetKeyDown(KeyCode.Space) && !Done) PathFinding(LastPos);
-        if(Done && !Pathway) {GetPathway(); Pathway = true; }
         
     }
 }
