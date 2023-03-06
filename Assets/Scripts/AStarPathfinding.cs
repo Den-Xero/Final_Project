@@ -96,26 +96,26 @@ public class AStarPathfinding : MonoBehaviour
     }
 
 
-    void BeginSearch()
+    public void BeginSearch(Hex goal)
     {
         Done = false;
         RemoveAllMarkers();
 
-        List<Vector2Int> hex = new List<Vector2Int>();
-        for (int y = 0; y < m_GameMap.GridSize.y; y++)
-            for (int x = 0; x < m_GameMap.GridSize.x; x++)
-            {
-                hex.Add(new Vector2Int(x, y));
-            }
+        //List<Vector2Int> hex = new List<Vector2Int>();
+        //for (int y = 0; y < m_GameMap.GridSize.y; y++)
+        //    for (int x = 0; x < m_GameMap.GridSize.x; x++)
+        //    {
+        //        hex.Add(new Vector2Int(x, y));
+        //    }
 
         //Suffles list then picks top hex to be the start location.
-        ShuffleList(hex);
-        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.PlayerCoords);
-        StartHex = new PathMarker(GameManager.Main.PlayerCoords, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+        //ShuffleList(hex);
+        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.PlayerArcher.Pos);
+        StartHex = new PathMarker(GameManager.Main.PlayerArcher.Pos, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
         //picks second top hex to be the end location.
-        Vector3 goalHex = m_GameMap.GetPositionFromCoordinate(new Vector2Int(hex[1].x, hex[1].y));
-        GoalHex = new PathMarker(new Vector2Int(hex[1].x, hex[1].y), 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
+        Vector3 goalHex = goal.transform.position;
+        GoalHex = new PathMarker(goal.Coords, 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
 
 
         Open.Clear();
@@ -278,8 +278,7 @@ public class AStarPathfinding : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        BeginSearch(); 
-        Pathway = false;
+        
     }
 
     public void GetPathway()
@@ -306,7 +305,6 @@ public class AStarPathfinding : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.A)) { BeginSearch(); Pathway = false; }
         
     }
 }

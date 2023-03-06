@@ -83,19 +83,20 @@ public class Hex : MonoBehaviour
 
         m_MeshFilter.mesh = m_Mesh;
         m_MeshRenderer.material = Mat;
+        DrawMesh();
     }
 
     private void OnEnable()
     {
-        DrawMesh();
+        
     }
 
     public void OnValidate()
     {
-        if (Application.isPlaying)
-        {
-            DrawMesh();
-        }
+        //if (Application.isPlaying)
+        //{
+        //    DrawMesh();
+        //}
     }
 
     public void DrawMesh()

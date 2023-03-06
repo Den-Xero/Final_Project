@@ -8,9 +8,8 @@ public class GameManager : MonoBehaviour
     public static GameManager Main { get; private set; }
     public GameMap GameBoard { get; private set; }
     public AStarPathfinding AStar { get; private set; }
-    public GameObject Player { get; private set; }
+    public PlayerArcher PlayerArcher { get; private set; }
 
-    public Vector2Int PlayerCoords;
 
 
     private void Awake()
@@ -26,11 +25,16 @@ public class GameManager : MonoBehaviour
         AStar = GetComponent<AStarPathfinding>();
     }
 
+    public void SetPlayerArcher()
+    {
+        PlayerArcher = GetComponentInChildren<PlayerArcher>();
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
-        Player = GameObject.FindGameObjectWithTag("Player");
+        
     }
 
     // Update is called once per frame

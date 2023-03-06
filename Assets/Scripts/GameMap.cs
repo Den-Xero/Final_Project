@@ -21,7 +21,7 @@ public class GameMap : MonoBehaviour
     public GameObject Archer;
     bool PlayerSpawned = false;
 
-    private void OnEnable()
+    private void Awake()
     {
         Clear();
         DrawGrid();
@@ -92,28 +92,32 @@ public class GameMap : MonoBehaviour
                 Hex.SetMesh(Mat[RandomNumber]);
                 Hex.DrawMesh();
 
-                if(x > 2 && x < GridSize.x - 2 && y < 2 && !PlayerSpawned)
-                {
-                    int spawn = Random.Range(0, 5);
-                    if(spawn == 2)
-                    {
-                        var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0,180,0)));
-                        temp.transform.SetParent(transform, true);
-                        GameManager.Main.PlayerCoords = new Vector2Int(x, y);
-                        PlayerSpawned = true;
-                    }
-                }
-                else if(x == GridSize.x - 3 && y == 1 && !PlayerSpawned)
+                if(x == GridSize.x - 3 && y == 1 && !PlayerSpawned)
                 {
                     var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
                     temp.transform.SetParent(transform, true);
-                    GameManager.Main.PlayerCoords = new Vector2Int(x, y);
+                    GameManager.Main.SetPlayerArcher();
+                    GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
+                    //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
                     PlayerSpawned = true;
+                }
+                else if(x > 2 && x < GridSize.x - 2 && y < 2 && !PlayerSpawned)
+                {
+                    int spawn = Random.Range(0, 5);
+                    if (spawn == 2)
+                    {
+                        var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
+                        temp.transform.SetParent(transform, true);
+                        GameManager.Main.SetPlayerArcher();
+                        GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
+                        //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
+                        PlayerSpawned = true;
+                    }
                 }
 
                 Tile.transform.SetParent(transform, true);
                 
-                GameObject waypoint = new GameObject($"WayPoint {x},{y}");
+                GameObject waypoint = new GameObject($"WayPoint {x},{y}", typeof(DetectClick), typeof(SphereCollider));
                 waypoint.transform.position = GetPositionFromCoordinate(new Vector2Int(x, y));
                 waypoint.transform.SetParent(Tile.transform, true);
 
