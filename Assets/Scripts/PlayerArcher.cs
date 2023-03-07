@@ -9,6 +9,8 @@ public class PlayerArcher : MonoBehaviour
     public Vector2Int Pos;
     float Speed = 2f;
     float RotateSpeed = 2f;
+    int MovementPoints = 4;
+    public bool StartFindingPath = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +20,8 @@ public class PlayerArcher : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !GameManager.Main.AStar.Done) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos);
+        if(Input.GetKeyDown(KeyCode.Space)) StartFindingPath = true;
+        if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
         if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
         {
             GameManager.Main.AStar.GetPathway();
@@ -37,19 +40,14 @@ public class PlayerArcher : MonoBehaviour
             if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position) < 0.2 && GameManager.Main.AStar.waypoint.Count > 0)
             {
                 Pos = GameManager.Main.AStar.coords.Pop();
-                GameManager.Main.PlayerArcher.Pos = Pos;
-                //Debug.Log(Pos);
-                //Debug.Log(GameManager.Main.PlayerArcher.Pos);
                 CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
             }
             else if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position) < 0.2)
             {
                 Pos = GameManager.Main.AStar.coords.Pop();
-                GameManager.Main.PlayerArcher.Pos = Pos;
-                //Debug.Log(Pos);
-                //Debug.Log(GameManager.Main.PlayerArcher.Pos);
                 GameManager.Main.AStar.Pathway = false;
                 GameManager.Main.AStar.Done = false;
+                StartFindingPath = false;
 
             }
 

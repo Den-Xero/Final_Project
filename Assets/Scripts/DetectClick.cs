@@ -19,6 +19,9 @@ public class DetectClick : MonoBehaviour
                 Hex par = GetComponentInParent<Hex>();
                 GameManager.Main.AStar.BeginSearch(par);
                 GameManager.Main.AStar.Pathway = false;
+                GameManager.Main.AStar.Incomplete = false;
+                GameManager.Main.AStar.Done = false;
+                GameManager.Main.PlayerArcher.StartFindingPath = false;
             }
         }
     }

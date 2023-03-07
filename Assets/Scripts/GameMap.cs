@@ -96,7 +96,7 @@ public class GameMap : MonoBehaviour
                 {
                     var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
                     temp.transform.SetParent(transform, true);
-                    GameManager.Main.SetPlayerArcher();
+                    GameManager.Main.SetPlayerArcher(temp);
                     GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
                     //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
                     PlayerSpawned = true;
@@ -108,7 +108,7 @@ public class GameMap : MonoBehaviour
                     {
                         var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
                         temp.transform.SetParent(transform, true);
-                        GameManager.Main.SetPlayerArcher();
+                        GameManager.Main.SetPlayerArcher(temp);
                         GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
                         //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
                         PlayerSpawned = true;

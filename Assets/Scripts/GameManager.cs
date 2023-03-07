@@ -25,9 +25,9 @@ public class GameManager : MonoBehaviour
         AStar = GetComponent<AStarPathfinding>();
     }
 
-    public void SetPlayerArcher()
+    public void SetPlayerArcher(GameObject player)
     {
-        PlayerArcher = GetComponentInChildren<PlayerArcher>();
+        PlayerArcher = player.GetComponent<PlayerArcher>();
     }
 
 
