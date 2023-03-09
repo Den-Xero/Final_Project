@@ -142,9 +142,9 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.PointTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    int T = 1 + ThisHex.TotalHexesMoved;
-                    if(T > MaxMovement) continue;
-                    if(neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
                     float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
@@ -170,9 +170,9 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.PointTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    int T = 1 + ThisHex.TotalHexesMoved;
-                    if (T > MaxMovement) continue;
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
                     float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
@@ -201,9 +201,9 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.FlatTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    int T = 1 + ThisHex.TotalHexesMoved;
-                    if (T > MaxMovement) continue;
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
                     float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
@@ -229,9 +229,9 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.FlatTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    int T = 1 + ThisHex.TotalHexesMoved;
-                    if (T > MaxMovement) continue;
                     if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
+                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
                     float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;

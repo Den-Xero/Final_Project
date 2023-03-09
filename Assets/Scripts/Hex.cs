@@ -29,6 +29,7 @@ public class Hex : MonoBehaviour
     MeshRenderer m_MeshRenderer;
     List<SideFaces> m_Faces;
     public Vector2Int Coords;
+    public int MovementCost;
 
     public Material Mat;
     public void SetMesh(Material mat)

@@ -22,6 +22,7 @@ public class DetectClick : MonoBehaviour
                 GameManager.Main.AStar.Incomplete = false;
                 GameManager.Main.AStar.Done = false;
                 GameManager.Main.PlayerArcher.StartFindingPath = false;
+
             }
         }
     }

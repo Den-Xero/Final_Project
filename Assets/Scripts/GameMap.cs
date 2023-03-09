@@ -79,7 +79,7 @@ public class GameMap : MonoBehaviour
         {
             for (int x = 0; x < GridSize.x; x++)
             {
-                int RandomNumber = Random.Range(0, 5);
+                int RandomNumber = Random.Range(0, 6);
                 GameObject Tile = new GameObject($"Hex {x},{y}", typeof(Hex));
                 Tile.transform.position = GetPositionFromCoordinate(new Vector2Int(x, y));
 
@@ -89,6 +89,25 @@ public class GameMap : MonoBehaviour
                 Hex.OuterSize = OuterSize;
                 Hex.InnerSize = InnerSize;
                 Hex.Coords = new Vector2Int(x, y);
+                string MatName = Mat[RandomNumber].name;
+                switch(MatName)
+                {
+                    case "Sand":
+                        Hex.MovementCost = 2;
+                        break;
+
+                    case "Water":
+                        Hex.MovementCost = 5;
+                        break;
+
+                    case "Mountain":
+                        Hex.MovementCost = 3;
+                        break;
+
+                    default:
+                        Hex.MovementCost = 1;
+                        break;
+                }
                 Hex.SetMesh(Mat[RandomNumber]);
                 Hex.DrawMesh();
 
@@ -193,6 +212,18 @@ public class GameMap : MonoBehaviour
         }
         UnityEngine.Debug.LogError("WayPoint not found");
         return null;
+    }
+
+    public int GetMovementCost(Vector2Int pos)
+    {
+        Hex[] hexes = this.transform.GetComponentsInChildren<Hex>();
+        foreach (Hex h in hexes)
+        {
+            if (h.Coords != pos) continue;
+            return h.MovementCost;
+        }
+        UnityEngine.Debug.LogError("Movement cost not found");
+        return 0;
     }
 
 }
