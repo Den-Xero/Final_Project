@@ -142,6 +142,7 @@ public class GameMap : MonoBehaviour
 
             }
         }
+        GameManager.Main.MakeIntOrder();
     }
 
     public Vector3 GetPositionFromCoordinate(Vector2Int Coordinate)

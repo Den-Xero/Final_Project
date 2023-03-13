@@ -92,7 +92,7 @@ public class AStarPathfinding : MonoBehaviour
 
 
 
-    void RemoveAllMarkers()
+    public void RemoveAllMarkers()
     {
         GameObject[] marker = GameObject.FindGameObjectsWithTag("Marker");
         foreach (GameObject m in marker) Destroy(m);
