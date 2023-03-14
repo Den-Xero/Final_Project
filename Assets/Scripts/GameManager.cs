@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
     {
         if (UnitIntOrder.Count > 0)
         {
-            UnitIntOrder = UnitIntOrder.OrderBy(p => p.Initiative).ThenBy(n => n.PlayerUnit ? 1 : 0).ToList<UnitBaseClass>();
+            UnitIntOrder = UnitIntOrder.OrderByDescending(p => p.Initiative).ThenBy(n => n.PlayerUnit ? 1 : 0).ToList<UnitBaseClass>();
             CurrentActiveUnit = UnitIntOrder[0];
             StarGame = true;
         }

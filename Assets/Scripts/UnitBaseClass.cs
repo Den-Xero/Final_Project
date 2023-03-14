@@ -8,6 +8,7 @@ public class UnitBaseClass : MonoBehaviour
     public bool PlayerUnit = false;
     public bool Moved = false;
     protected int MovementPoints = 4;
+    protected int MovementPointsUsed;
     // Start is called before the first frame update
 
     public virtual void UpdateLoop() { }

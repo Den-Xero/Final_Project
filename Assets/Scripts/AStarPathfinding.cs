@@ -300,12 +300,11 @@ public class AStarPathfinding : MonoBehaviour
         
     }
 
-    public void GetPathway()
+    public int GetPathway()
     {
         RemoveAllMarkers();
         PathMarker Marker = LastPos;
         waypoint.Clear();
-
         while (StartHex.HexLocation != Marker.HexLocation && Marker != null)
         {
             Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(Marker.HexLocation.x, Marker.HexLocation.y)), Quaternion.identity);
@@ -319,6 +318,7 @@ public class AStarPathfinding : MonoBehaviour
         }
         
         Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(StartHex.HexLocation.x, StartHex.HexLocation.y)), Quaternion.identity);
+        return LastPos.TotalHexesMoved;
     }
 
     // Update is called once per frame

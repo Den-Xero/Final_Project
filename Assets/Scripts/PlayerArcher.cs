@@ -9,14 +9,9 @@ public class PlayerArcher : UnitBaseClass
     GameObject CurrentWaypoint;
     public Vector2Int Pos;
     float Speed = 2f;
-    float RotateSpeed = 2f;
+    float RotateSpeed = 4f;
     public bool StartFindingPath = false;
     
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     private void Awake()
     {
@@ -25,13 +20,6 @@ public class PlayerArcher : UnitBaseClass
         MovementPoints = 4;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-        
-    }
-    
     public override void UpdateLoop()
     {
         if(Moved)return;
@@ -39,7 +27,7 @@ public class PlayerArcher : UnitBaseClass
         if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
         if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
         {
-            GameManager.Main.AStar.GetPathway();
+            MovementPointsUsed = GameManager.Main.AStar.GetPathway();
             GameManager.Main.AStar.Pathway = true;
             CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
         }
@@ -50,12 +38,12 @@ public class PlayerArcher : UnitBaseClass
     public void Move()
     {
         if (!GameManager.Main.AStar.Pathway) return;
-        if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position) < 0.2 && GameManager.Main.AStar.waypoint.Count > 0)
+        if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position + new Vector3(0, 2, -1)) < 0.2 && GameManager.Main.AStar.waypoint.Count > 0)
         {
              Pos = GameManager.Main.AStar.coords.Pop();
              CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
         }
-        else if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position) < 0.2)
+        else if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position + new Vector3(0, 2, -1)) < 0.2)
         {
              Pos = GameManager.Main.AStar.coords.Pop();
              GameManager.Main.AStar.RemoveAllMarkers();
@@ -66,7 +54,7 @@ public class PlayerArcher : UnitBaseClass
         }
 
         //this.transform.LookAt(CurrentWaypoint.transform);
-        Quaternion LookAtWP = Quaternion.LookRotation(CurrentWaypoint.transform.position - this.transform.position);
+        Quaternion LookAtWP = Quaternion.LookRotation(CurrentWaypoint.transform.position + new Vector3(0, 2, -1) - this.transform.position);
 
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, LookAtWP, RotateSpeed * Time.deltaTime);
 
