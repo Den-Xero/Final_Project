@@ -7,9 +7,6 @@ using UnityEngine.XR;
 public class PlayerArcher : UnitBaseClass
 {
     GameObject CurrentWaypoint;
-    public Vector2Int Pos;
-    float Speed = 2f;
-    float RotateSpeed = 4f;
     public bool StartFindingPath = false;
     
 
@@ -17,12 +14,21 @@ public class PlayerArcher : UnitBaseClass
     {
         Initiative = 5;
         PlayerUnit = true;
-        MovementPoints = 4;
+        MovementPoints = 6;
+        AttackRange = 2;
     }
 
     public override void UpdateLoop()
     {
-        if(Moved)return;
+        if(Action)return;
+        if (Moved) 
+        { 
+            if(!GameManager.Main.AStar.Done && Attacking)
+            {
+                Attack();
+            }
+            return; 
+        }
         if (Input.GetKeyDown(KeyCode.Space)) StartFindingPath = true;
         if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
         if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
@@ -32,7 +38,8 @@ public class PlayerArcher : UnitBaseClass
             CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
         }
 
-        Move();
+        if(!Moved) Move();
+
     }
 
     public void Move()
@@ -61,7 +68,40 @@ public class PlayerArcher : UnitBaseClass
         this.transform.Translate(0, 0, Speed * Time.deltaTime);
     }
 
+    public bool CanAttack()
+    {
+        if(MovementPointsUsed > MovementPoints - 2)
+        {
+            return false;
+        }
+        
+        return true;
+    }
 
+
+    public void Attack()
+    {
+        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
+
+        if (!GameManager.Main.AStar.Done) return;
+        
+        GameManager.Main.AStar.GetPathway();
+        if(GameManager.Main.AStar.waypoint.Count > AttackRange)
+        {
+            GameManager.Main.AStar.waypoint.Clear();
+            GameManager.Main.AStar.RemoveAllMarkers();
+            Attacking = false;
+            GameManager.Main.AStar.Done = false;
+            print("Unit not in attack range.");
+            return;
+        }
+        GameManager.Main.AStar.RemoveAllMarkers();
+        AttackTarget.TakeDamage(10);
+        print("Target hit");
+        Attacking = false;
+        Action = true;
+        GameManager.Main.AStar.Done = false;
+    }
 
 
 

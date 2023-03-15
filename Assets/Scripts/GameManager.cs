@@ -13,12 +13,13 @@ public class GameManager : MonoBehaviour
     public AStarPathfinding AStar { get; private set; }
     public PlayerArcher PlayerArcher { get; private set; }
     public AIArcher AiArcher { get; private set; }
+    public AIWarrior AiWarrior { get; private set; }
 
     public GameObject UnitNotMoved;
     float TimeAcive = 5f;
     float TimeToDisappear;
+    public List<UnitBaseClass> UnitIntOrder = new List<UnitBaseClass>();
 
-    List<UnitBaseClass> UnitIntOrder = new List<UnitBaseClass>();
     bool End = false;
     UnitBaseClass CurrentActiveUnit;
     bool StarGame = false;
@@ -45,6 +46,12 @@ public class GameManager : MonoBehaviour
         UnitIntOrder.Add(PlayerArcher);
     }
 
+    public void SetAIWarrior(GameObject AI)
+    {
+        AiWarrior = AI.GetComponent<AIWarrior>();
+        UnitIntOrder.Add(AiWarrior);
+    }
+
     public void MakeIntOrder()
     {
         if (UnitIntOrder.Count > 0)
@@ -69,6 +76,7 @@ public class GameManager : MonoBehaviour
         }
         End = true;
         CurrentActiveUnit.Moved = false;
+        CurrentActiveUnit.Action = false;
     }
 
 

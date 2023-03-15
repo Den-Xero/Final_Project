@@ -104,22 +104,20 @@ public class AStarPathfinding : MonoBehaviour
         Done = false;
         RemoveAllMarkers();
 
-        //List<Vector2Int> hex = new List<Vector2Int>();
-        //for (int y = 0; y < m_GameMap.GridSize.y; y++)
-        //    for (int x = 0; x < m_GameMap.GridSize.x; x++)
-        //    {
-        //        hex.Add(new Vector2Int(x, y));
-        //    }
-
-        //Suffles list then picks top hex to be the start location.
-        //ShuffleList(hex);
+        if (!GameManager.Main.PlayerArcher.Moved)
+        {
+            foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+            {
+                if (unit.Pos == goal.Coords) { print("A unit is already at that location"); return; }
+            }
+        }
+        
         Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.PlayerArcher.Pos);
         StartHex = new PathMarker(GameManager.Main.PlayerArcher.Pos, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
         //picks second top hex to be the end location.
         Vector3 goalHex = goal.transform.position;
         GoalHex = new PathMarker(goal.Coords, 0, 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
-
 
         Open.Clear();
         Closed.Clear();
@@ -132,7 +130,7 @@ public class AStarPathfinding : MonoBehaviour
     public void PathFinding(PathMarker ThisHex, int MaxMovement)
     {
         if (ThisHex == null) return;
-        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return; } // goal has been reached.
+        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; print("End hit"); return; } // goal has been reached.
         //if (Open.Count == 0) { Debug.Log("End location out of movement range."); Incomplete = true; }
 
         if(!m_GameMap.FlatTop)

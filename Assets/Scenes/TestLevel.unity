@@ -436,6 +436,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   - {fileID: 2100000, guid: 7043f991d0b96504ba4c23c60f57fff4, type: 2}
   Archer: {fileID: 8347702481994786855, guid: 3b918bf8e8c2a0444b268833e91659ce, type: 3}
+  AiWarrior: {fileID: 8336277389714645377, guid: c5225a4eff1da494096dafedd461e65b, type: 3}
   PointTopNoOffsetNeighbours:
   - {x: 0, y: 1}
   - {x: -1, y: 1}
@@ -614,6 +615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnitNotMoved: {fileID: 194389877}
+  UnitIntOrder: []
 --- !u!114 &6293981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,6 +631,7 @@ MonoBehaviour:
   Initiative: 0
   PlayerUnit: 0
   Moved: 0
+  Pos: {x: 0, y: 0}
 --- !u!43 &6763563
 Mesh:
   m_ObjectHideFlags: 0

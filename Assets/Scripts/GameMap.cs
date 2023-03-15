@@ -19,6 +19,7 @@ public class GameMap : MonoBehaviour
 
     [Header("Entities")]
     public GameObject Archer;
+    public GameObject AiWarrior;
     bool PlayerSpawned = false;
 
     private void Awake()
@@ -132,6 +133,14 @@ public class GameMap : MonoBehaviour
                         //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
                         PlayerSpawned = true;
                     }
+                }
+
+                if(x == 5 && y == 5)
+                {
+                    var temp = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                    temp.transform.SetParent(transform, true);
+                    GameManager.Main.SetAIWarrior(temp);
+                    GameManager.Main.AiWarrior.Pos = new Vector2Int(x, y);
                 }
 
                 Tile.transform.SetParent(transform, true);
