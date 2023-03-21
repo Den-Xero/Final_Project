@@ -127,7 +127,7 @@ public class AStarPathfinding : MonoBehaviour
     }
 
 
-    public void PathFinding(PathMarker ThisHex, int MaxMovement)
+    public void PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
     {
         if (ThisHex == null) return;
         if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; print("End hit"); return; } // goal has been reached.
@@ -152,12 +152,7 @@ public class AStarPathfinding : MonoBehaviour
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
 
-                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
-                    //Values[0].text = "G: " + G.ToString("0.00");
-                    //Values[1].text = "H: " + H.ToString("0.00");
-                    //Values[2].text = "F: " + F.ToString("0.00");
-
-                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex)) 
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex)) 
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
 
                 }
@@ -180,12 +175,7 @@ public class AStarPathfinding : MonoBehaviour
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
 
-                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
-                    //Values[0].text = "G: " + G.ToString("0.00");
-                    //Values[1].text = "H: " + H.ToString("0.00");
-                    //Values[2].text = "F: " + F.ToString("0.00");
-
-                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
 
                 }
@@ -211,12 +201,7 @@ public class AStarPathfinding : MonoBehaviour
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
 
-                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
-                    //Values[0].text = "G: " + G.ToString("0.00");
-                    //Values[1].text = "H: " + H.ToString("0.00");
-                    //Values[2].text = "F: " + F.ToString("0.00");
-
-                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
 
                 }
@@ -239,12 +224,7 @@ public class AStarPathfinding : MonoBehaviour
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
 
-                    //TextMesh[] Values = PathBlock.GetComponentsInChildren<TextMesh>();
-                    //Values[0].text = "G: " + G.ToString("0.00");
-                    //Values[1].text = "H: " + H.ToString("0.00");
-                    //Values[2].text = "F: " + F.ToString("0.00");
-
-                    if (!MarkerNeedUpdate(neighbour, G, H, F, ThisHex))
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
 
                 }
@@ -258,7 +238,16 @@ public class AStarPathfinding : MonoBehaviour
             RemoveAllMarkers(); 
             return;  
         }
-        Open = Open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
+
+        if (TFirst)
+        {
+            Open = Open.OrderBy(p => p.TotalHexesMoved).ThenBy(n => n.F).ThenBy(g => g.H).ToList<PathMarker>();
+        }
+        else
+        {
+            Open = Open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
+        }
+
         PathMarker pm = Open.ElementAt(0);
         Closed.Add(pm);
         Open.RemoveAt(0);
@@ -267,17 +256,25 @@ public class AStarPathfinding : MonoBehaviour
 
     }
 
-    bool MarkerNeedUpdate(Vector2Int pos, float g, float h, float f, PathMarker par)
+    bool MarkerNeedUpdate(Vector2Int pos, float g, float h, float f, int t, PathMarker par)
     {
         foreach (PathMarker p in Open)
         {
             if(p.HexLocation == pos)
             {
-                p.G = g;
-                p.H = h;
-                p.F = f;
-                p.Parent = par;
-                return true;
+                if (t < p.TotalHexesMoved)
+                {
+                    p.G = g;
+                    p.H = h;
+                    p.F = f;
+                    p.TotalHexesMoved = t;
+                    p.Parent = par;
+                    return true;
+                }
+                else
+                {
+                    return true;
+                }
             }
         }
         return false;

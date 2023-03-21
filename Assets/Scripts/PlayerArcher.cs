@@ -30,7 +30,7 @@ public class PlayerArcher : UnitBaseClass
             return; 
         }
         if (Input.GetKeyDown(KeyCode.Space)) StartFindingPath = true;
-        if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
+        if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, true);
         if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
         {
             MovementPointsUsed = GameManager.Main.AStar.GetPathway();
@@ -81,7 +81,7 @@ public class PlayerArcher : UnitBaseClass
 
     public void Attack()
     {
-        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints);
+        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, false);
 
         if (!GameManager.Main.AStar.Done) return;
         
