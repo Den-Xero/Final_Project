@@ -6,11 +6,14 @@ public class UnitBaseClass : MonoBehaviour
 {
     public int Initiative = 0;
     protected int AttackRange = 0;
-    protected int Health = 100;
+    protected int Health = 0;
+    protected int MaxHealth = 100;
+    public int AttackDamage = 0;
     public bool PlayerUnit = false;
     public bool Moved = false;
     public bool Action = false;
     public bool Attacking = false;
+    public bool Alive = true;
     protected int MovementPoints = 4;
     protected int MovementPointsUsed;
     public Vector2Int Pos;
@@ -26,6 +29,19 @@ public class UnitBaseClass : MonoBehaviour
     public void TakeDamage(int damage)
     {
         Health -= damage;
+        if (Health <= 0)
+        {
+            for (int i = 0; i < GameManager.Main.UnitIntOrder.Count; i++)
+            {
+                if (GameManager.Main.UnitIntOrder[i] == this)
+                {
+                    GameManager.Main.UnitIntOrder.RemoveAt(i);
+                    break;
+                }
+            }
+            Alive = false;
+            this.gameObject.SetActive(false);
+        }
     }
 
     protected void Move()
@@ -87,6 +103,59 @@ public class UnitBaseClass : MonoBehaviour
         Attacking = false;
         Action = true;
         GameManager.Main.AStar.Done = false;
+    }
+
+
+    protected void TankSetUp()
+    {
+        Initiative = 1;
+        MovementPoints = 2;
+        AttackRange = 1;
+        AttackDamage = 10;
+        MaxHealth = 250;
+        Health = MaxHealth;
+        
+    }
+
+    protected void RogueSetUp()
+    {
+        Initiative = 7;
+        MovementPoints = 8;
+        AttackRange = 1;
+        AttackDamage = 30;
+        MaxHealth = 100;
+        Health = MaxHealth;
+    }
+
+    protected void MageSetUp()
+    {
+        Initiative = 2;
+        MovementPoints = 3;
+        AttackRange = 8;
+        AttackDamage = 25;
+        MaxHealth = 80;
+        Health = MaxHealth;
+
+    }
+
+    protected void WarriorSetUp()
+    {
+        Initiative = 3;
+        MovementPoints = 4;
+        AttackRange = 2;
+        AttackDamage = 15;
+        MaxHealth = 150;
+        Health = MaxHealth;
+    }
+
+    protected void ArcherSetUp()
+    {
+        Initiative = 5;
+        MovementPoints = 6;
+        AttackRange = 4;
+        AttackDamage = 20;
+        MaxHealth = 100;
+        Health = MaxHealth;
     }
 
 }

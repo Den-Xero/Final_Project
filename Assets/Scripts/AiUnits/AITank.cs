@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMage : UnitBaseClass
+public class AITank : UnitBaseClass
 {
     private void Awake()
     {
-        MageSetUp();
-        PlayerUnit = true;
+        TankSetUp();
     }
+
+
 }

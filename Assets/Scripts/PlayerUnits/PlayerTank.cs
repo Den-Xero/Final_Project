@@ -6,10 +6,8 @@ public class PlayerTank : UnitBaseClass
 {
     private void Awake()
     {
-        Initiative = 1;
+        TankSetUp();
         PlayerUnit = true;
-        MovementPoints = 2;
-        AttackRange = 1;
     }
 
 

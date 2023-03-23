@@ -8,7 +8,7 @@ public class AIArcher : UnitBaseClass
     
     private void Awake()
     {
-        Initiative = 6;
+        ArcherSetUp();
     }
 
     public override void UpdateLoop()

@@ -9,10 +9,8 @@ public class PlayerArcher : UnitBaseClass
 
     private void Awake()
     {
-        Initiative = 5;
+        ArcherSetUp();
         PlayerUnit = true;
-        MovementPoints = 6;
-        AttackRange = 4;
     }
 
     public override void UpdateLoop()

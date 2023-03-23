@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
     {
         if (UnitIntOrder.Count > 0)
         {
-            UnitIntOrder = UnitIntOrder.OrderByDescending(p => p.Initiative).ThenBy(n => n.PlayerUnit ? 1 : 0).ToList<UnitBaseClass>();
+            UnitIntOrder = UnitIntOrder.OrderByDescending(p => p.Initiative).ThenBy(n => n.PlayerUnit ? 0 : 1).ToList<UnitBaseClass>();
             CurrentActiveUnit = UnitIntOrder[0];
             StarGame = true;
         }
@@ -79,12 +79,6 @@ public class GameManager : MonoBehaviour
         CurrentActiveUnit.Action = false;
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     void Update()

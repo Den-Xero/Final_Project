@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.1802838, g: 0.22571412, b: 0.30692288, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -629,9 +629,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Initiative: 0
+  AttackDamage: 0
   PlayerUnit: 0
   Moved: 0
+  Action: 0
+  Attacking: 0
+  Alive: 1
   Pos: {x: 0, y: 0}
+  AttackTarget: {fileID: 0}
+  StartFindingPath: 0
 --- !u!43 &6763563
 Mesh:
   m_ObjectHideFlags: 0
@@ -1169,7 +1175,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 31143564}
   m_LocalRotation: {x: -0.0038962723, y: -0.95456773, z: 0.29787883, w: -0.007318006}
-  m_LocalPosition: {x: 14.78, y: 54.52, z: 39.36}
+  m_LocalPosition: {x: 13.3, y: 30.8, z: 19.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9861,9 +9867,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Initiative: 0
+  AttackDamage: 0
   PlayerUnit: 0
   Moved: 0
+  Action: 0
+  Attacking: 0
+  Alive: 1
   Pos: {x: 0, y: 0}
+  AttackTarget: {fileID: 0}
   StartFindingPath: 0
 --- !u!23 &627297498
 MeshRenderer:
@@ -16085,7 +16096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}

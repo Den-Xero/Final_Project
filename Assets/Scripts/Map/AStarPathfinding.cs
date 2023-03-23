@@ -130,7 +130,7 @@ public class AStarPathfinding : MonoBehaviour
     public void PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
     {
         if (ThisHex == null) return;
-        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; print("End hit"); return; } // goal has been reached.
+        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return; } // goal has been reached.
         //if (Open.Count == 0) { Debug.Log("End location out of movement range."); Incomplete = true; }
 
         if(!m_GameMap.FlatTop)

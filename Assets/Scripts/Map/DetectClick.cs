@@ -16,7 +16,7 @@ public class DetectClick : MonoBehaviour
             if (hit.collider.gameObject == gameObject)
             {
                 // Do something with the clicked object
-                Debug.Log("Clicked on " + gameObject.name);
+                //Debug.Log("Clicked on " + gameObject.name);
                 Hex par = GetComponentInParent<Hex>();
                 if (!GameManager.Main.PlayerArcher.Moved)
                 {
@@ -33,7 +33,7 @@ public class DetectClick : MonoBehaviour
                     if (!GameManager.Main.PlayerArcher.CanAttack()) { print("Unit has moved too far to attack this turn."); return; }
                     foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
                     {
-                        if (unit.Pos == par.Coords && !unit.PlayerUnit) 
+                        if (unit.Pos == par.Coords && !unit.PlayerUnit && unit.Alive) 
                         {
                             print("A unit is at that location"); 
                             EnemyAtLocation = true; 

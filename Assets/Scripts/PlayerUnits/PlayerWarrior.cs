@@ -6,10 +6,8 @@ public class PlayerWarrior : UnitBaseClass
 {
     private void Awake()
     {
-        Initiative = 3;
+        WarriorSetUp();
         PlayerUnit = true;
-        MovementPoints = 4;
-        AttackRange = 2;
     }
 
 }

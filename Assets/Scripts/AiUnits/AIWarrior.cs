@@ -6,9 +6,7 @@ public class AIWarrior : UnitBaseClass
 {
     private void Awake()
     {
-        Initiative = 3;
-        MovementPoints = 4;
-        AttackRange = 1;
+        WarriorSetUp();
     }
 
     public override void UpdateLoop()

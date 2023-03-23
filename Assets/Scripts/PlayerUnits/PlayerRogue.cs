@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerRoge : UnitBaseClass
+public class PlayerRogue : UnitBaseClass
 {
     private void Awake()
     {
-        Initiative = 7;
+        RogueSetUp();
         PlayerUnit = true;
-        MovementPoints = 8;
-        AttackRange = 1;
     }
 
 }
