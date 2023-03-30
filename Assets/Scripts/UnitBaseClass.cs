@@ -8,27 +8,61 @@ public class UnitBaseClass : MonoBehaviour
     protected int AttackRange = 0;
     protected int Health = 0;
     protected int MaxHealth = 100;
+    protected string UnitType = "";
+    public string TileEffect = "";
+    /* Effect list:
+        Cobblestone, Dirt, Grassland = no effect.
+        Sand = Range units have 2 less range, melee units take more damage or get stunned, Rogue has 25% change to ignore damage.
+        Water = Unit can not attack.
+        Mountain = Range units have 2 more range, melee units have a 25% change to ignore damage.
+     */
     public int AttackDamage = 0;
     public bool PlayerUnit = false;
     public bool Moved = false;
     public bool Action = false;
     public bool Attacking = false;
     public bool Alive = true;
+    public bool Ranged;
+    int DamageReduction = 0f;
     protected int MovementPoints = 4;
     protected int MovementPointsUsed;
     public Vector2Int Pos;
     protected float Speed = 2f;
     protected float RotateSpeed = 4f;
+    float PercentChance = 0.25f;
     public UnitBaseClass AttackTarget;
     protected GameObject CurrentWaypoint;
     public bool StartFindingPath = false;
-    // Start is called before the first frame update
 
     public virtual void UpdateLoop() { }
 
     public void TakeDamage(int damage)
     {
-        Health -= damage;
+        if (!Ranged && TileEffect == "Mountain" || UnitType == "Rogue" && TileEffect == "Sand")
+        {
+            if(Random.value <= PercentChance)
+            {
+                if(UnitType == "Rogue")
+                {
+                    print("Attack Ignored");
+                    return;
+                }
+                else
+                {
+                    DamageReduction = damage / 2;
+                }
+                
+            }
+        }
+        if(!Ranged && TileEffect == "Sand" && UnitType != "Rogue")
+        {
+            Health -= damage + (damage/2);
+        }
+        else
+        {
+            Health -= damage - DamageReduction;
+            DamageReduction = 0;
+        }
         if (Health <= 0)
         {
             for (int i = 0; i < GameManager.Main.UnitIntOrder.Count; i++)
@@ -41,6 +75,18 @@ public class UnitBaseClass : MonoBehaviour
             }
             Alive = false;
             this.gameObject.SetActive(false);
+        }
+    }
+
+    protected void MoveSetUp()
+    {
+        if (Input.GetKeyDown(KeyCode.Space)) StartFindingPath = true;
+        if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, true);
+        if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
+        {
+            MovementPointsUsed = GameManager.Main.AStar.GetPathway();
+            GameManager.Main.AStar.Pathway = true;
+            CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
         }
     }
 
@@ -72,6 +118,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public bool CanAttack()
     {
+        if(TileEffect == "Water") return false;
         if (MovementPointsUsed > MovementPoints - 2)
         {
             return false;
@@ -88,17 +135,45 @@ public class UnitBaseClass : MonoBehaviour
         if (!GameManager.Main.AStar.Done) return;
 
         GameManager.Main.AStar.GetPathway();
-        if (GameManager.Main.AStar.waypoint.Count > AttackRange)
+        if(Ranged && TileEffect == "Sand")
         {
-            GameManager.Main.AStar.waypoint.Clear();
-            GameManager.Main.AStar.RemoveAllMarkers();
-            Attacking = false;
-            GameManager.Main.AStar.Done = false;
-            print("Unit not in attack range.");
-            return;
+            if (GameManager.Main.AStar.waypoint.Count > AttackRange - 2)
+            {
+                GameManager.Main.AStar.waypoint.Clear();
+                GameManager.Main.AStar.RemoveAllMarkers();
+                Attacking = false;
+                GameManager.Main.AStar.Done = false;
+                print("Unit not in attack range.");
+                return;
+            }
         }
+        else if (Ranged && TileEffect == "Mountain")
+        {
+            if (GameManager.Main.AStar.waypoint.Count > AttackRange + 2)
+            {
+                GameManager.Main.AStar.waypoint.Clear();
+                GameManager.Main.AStar.RemoveAllMarkers();
+                Attacking = false;
+                GameManager.Main.AStar.Done = false;
+                print("Unit not in attack range.");
+                return;
+            }
+        }
+        else
+        {
+            if (GameManager.Main.AStar.waypoint.Count > AttackRange)
+            {
+                GameManager.Main.AStar.waypoint.Clear();
+                GameManager.Main.AStar.RemoveAllMarkers();
+                Attacking = false;
+                GameManager.Main.AStar.Done = false;
+                print("Unit not in attack range.");
+                return;
+            }
+        }
+
         GameManager.Main.AStar.RemoveAllMarkers();
-        AttackTarget.TakeDamage(10);
+        AttackTarget.TakeDamage(AttackDamage);
         print("Target hit");
         Attacking = false;
         Action = true;
@@ -114,7 +189,8 @@ public class UnitBaseClass : MonoBehaviour
         AttackDamage = 10;
         MaxHealth = 250;
         Health = MaxHealth;
-        
+        Ranged = false;
+        UnitType = "Tank";
     }
 
     protected void RogueSetUp()
@@ -125,6 +201,8 @@ public class UnitBaseClass : MonoBehaviour
         AttackDamage = 30;
         MaxHealth = 100;
         Health = MaxHealth;
+        Ranged = false;
+        UnitType = "Rogue";
     }
 
     protected void MageSetUp()
@@ -135,7 +213,8 @@ public class UnitBaseClass : MonoBehaviour
         AttackDamage = 25;
         MaxHealth = 80;
         Health = MaxHealth;
-
+        Ranged = true;
+        UnitType = "Mage";
     }
 
     protected void WarriorSetUp()
@@ -146,6 +225,8 @@ public class UnitBaseClass : MonoBehaviour
         AttackDamage = 15;
         MaxHealth = 150;
         Health = MaxHealth;
+        Ranged = false;
+        UnitType = "Warrior";
     }
 
     protected void ArcherSetUp()
@@ -156,6 +237,8 @@ public class UnitBaseClass : MonoBehaviour
         AttackDamage = 20;
         MaxHealth = 100;
         Health = MaxHealth;
+        Ranged = true;
+        UnitType = "Archer";
     }
 
 }

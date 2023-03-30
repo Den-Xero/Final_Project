@@ -30,6 +30,13 @@ public class Hex : MonoBehaviour
     List<SideFaces> m_Faces;
     public Vector2Int Coords;
     public int MovementCost;
+    public string Effect;
+    /* Effect list:
+        Cobblestone, Dirt, Grassland = no effect.
+        Sand = Range units have 2 less range, melee units take more damage or get stunned.
+        Water = Unit can not attack.
+        Mountain = Range units have 2 more range, melee units have a 25% change to ignore damage.
+     */
 
     public Material Mat;
     public void SetMesh(Material mat)

@@ -91,6 +91,7 @@ public class GameMap : MonoBehaviour
                 Hex.InnerSize = InnerSize;
                 Hex.Coords = new Vector2Int(x, y);
                 string MatName = Mat[RandomNumber].name;
+                Hex.Effect = MatName;
                 switch(MatName)
                 {
                     case "Sand":

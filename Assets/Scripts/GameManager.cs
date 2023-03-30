@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public List<UnitBaseClass> UnitIntOrder = new List<UnitBaseClass>();
 
     bool End = false;
-    UnitBaseClass CurrentActiveUnit;
+    public UnitBaseClass CurrentActiveUnit;
     bool StarGame = false;
     int CurrentOrderNum = 0;
 

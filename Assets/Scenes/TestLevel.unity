@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.1802838, g: 0.22571412, b: 0.30692288, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -336,6 +336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -404,6 +405,7 @@ GameObject:
   - component: {fileID: 6293977}
   - component: {fileID: 6293979}
   - component: {fileID: 6293981}
+  - component: {fileID: 6293982}
   m_Layer: 0
   m_Name: GameBoard
   m_TagString: Untagged
@@ -629,15 +631,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Initiative: 0
+  TileEffect: 
   AttackDamage: 0
   PlayerUnit: 0
   Moved: 0
   Action: 0
   Attacking: 0
   Alive: 1
+  Ranged: 0
   Pos: {x: 0, y: 0}
   AttackTarget: {fileID: 0}
   StartFindingPath: 0
+--- !u!114 &6293982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6293976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b6cf3fabb0cae448c3e0d22a66f608, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!43 &6763563
 Mesh:
   m_ObjectHideFlags: 0
@@ -1231,6 +1247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -1335,6 +1352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -1483,6 +1501,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -1587,6 +1606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -1691,6 +1711,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -1795,6 +1816,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -2107,6 +2129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -2419,6 +2442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -3431,6 +3455,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -3699,6 +3724,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -3938,6 +3964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -4309,6 +4336,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -4413,6 +4441,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -5173,6 +5202,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -5277,6 +5307,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -5425,6 +5456,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -5737,6 +5769,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -6005,6 +6038,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -6317,6 +6351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -6925,6 +6960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -7237,6 +7273,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -7341,6 +7378,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -7445,6 +7483,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -7713,6 +7752,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -7817,6 +7857,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -8249,6 +8290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -8397,6 +8439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -9409,6 +9452,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -9721,6 +9765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -9867,12 +9912,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Initiative: 0
+  TileEffect: 
   AttackDamage: 0
   PlayerUnit: 0
   Moved: 0
   Action: 0
   Attacking: 0
   Alive: 1
+  Ranged: 0
   Pos: {x: 0, y: 0}
   AttackTarget: {fileID: 0}
   StartFindingPath: 0
@@ -10183,6 +10230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -10539,6 +10587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11015,6 +11064,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11119,6 +11169,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11387,6 +11438,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11491,6 +11543,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11639,6 +11692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -11787,6 +11841,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -12427,6 +12482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -12575,6 +12631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -12887,6 +12944,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -13809,6 +13867,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -14449,6 +14508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -14553,6 +14613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -14745,6 +14806,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -14937,6 +14999,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -15413,6 +15476,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -15561,6 +15625,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -15665,6 +15730,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -16267,6 +16333,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -16623,6 +16690,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -16727,6 +16795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -16831,6 +16900,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -17471,6 +17541,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -17783,6 +17854,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -17887,6 +17959,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -18199,6 +18272,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -18303,6 +18377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -18703,6 +18778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19223,6 +19299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19327,6 +19404,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19595,6 +19673,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19699,6 +19778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19847,6 +19927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -19951,6 +20032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -20219,6 +20301,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -20367,6 +20450,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -20515,6 +20599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -20619,6 +20704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -20887,6 +20973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -21615,6 +21702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -21883,6 +21971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -21987,6 +22076,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -22135,6 +22225,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -22447,6 +22538,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -22759,6 +22851,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -23443,6 +23536,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 7}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -23711,6 +23805,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -23859,6 +23954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 2}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -24961,6 +25057,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -25065,6 +25162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -25213,6 +25311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -25317,6 +25416,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 1}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -25629,6 +25729,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -26653,6 +26754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 1, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -27249,6 +27351,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 6}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -28885,6 +28988,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 6, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -29033,6 +29137,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -29137,6 +29242,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 5, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -29285,6 +29391,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -29597,6 +29704,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 4}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -29745,6 +29853,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 3, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30057,6 +30166,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 5}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30325,6 +30435,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 0, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30473,6 +30584,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 0}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 8e3447f9bfc0fb94eab49bddaf7f2663, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30785,6 +30897,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 7, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: d5f3a4dd3160cb949ad6beb842f38d56, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30889,6 +31002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 8, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -30993,6 +31107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 9, y: 9}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: cce3e60367df69948acf9372d2d545a0, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -31305,6 +31420,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 4, y: 8}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: 6b4f3e27f218281479294c08c078896d, type: 2}
   InnerSize: 1.5
   OuterSize: 2
@@ -31957,6 +32073,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Coords: {x: 2, y: 3}
   MovementCost: 0
+  Effect: 
   Mat: {fileID: 2100000, guid: f444666ed3e718546b86a681a1cab720, type: 2}
   InnerSize: 1.5
   OuterSize: 2
