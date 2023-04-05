@@ -23,7 +23,7 @@ public class UnitBaseClass : MonoBehaviour
     public bool Attacking = false;
     public bool Alive = true;
     public bool Ranged;
-    int DamageReduction = 0f;
+    int DamageReduction = 0;
     protected int MovementPoints = 4;
     protected int MovementPointsUsed;
     public Vector2Int Pos;
