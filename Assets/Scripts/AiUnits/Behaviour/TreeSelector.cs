@@ -19,7 +19,7 @@ public class TreeSelector : TreeNodes
         //checks if node is complete, if not returns running so tree know that it is still running.
         Status ChildStatus = Children[CurrentChild].Process();
         if (ChildStatus == Status.RUNNING) return Status.RUNNING;
-        //if complete check if the node successful, if is it will return success so the tree knows that the selector was successful.
+        //if complete check if the node successful, if so it will return success so the tree knows that the selector was successful.
         if (ChildStatus == Status.SUCCESS)
         {
             CurrentChild = 0;

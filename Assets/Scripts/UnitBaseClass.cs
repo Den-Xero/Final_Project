@@ -8,7 +8,7 @@ public class UnitBaseClass : MonoBehaviour
     protected int AttackRange = 0;
     protected int Health = 0;
     protected int MaxHealth = 100;
-    protected string UnitType = "";
+    public string UnitType = "";
     public string TileEffect = "";
     /* Effect list:
         Cobblestone, Dirt, Grassland = no effect.
@@ -24,15 +24,16 @@ public class UnitBaseClass : MonoBehaviour
     public bool Alive = true;
     public bool Ranged;
     int DamageReduction = 0;
-    protected int MovementPoints = 4;
-    protected int MovementPointsUsed;
+    public int MovementPoints = 4;
+    public int MovementPointsUsed;
     public Vector2Int Pos;
     protected float Speed = 2f;
     protected float RotateSpeed = 4f;
     float PercentChance = 0.25f;
     public UnitBaseClass AttackTarget;
-    protected GameObject CurrentWaypoint;
+    public GameObject CurrentWaypoint;
     public bool StartFindingPath = false;
+
 
     public virtual void UpdateLoop() { }
 
@@ -90,9 +91,9 @@ public class UnitBaseClass : MonoBehaviour
         }
     }
 
-    protected void Move()
+    public TreeNodes.Status Move()
     {
-        if (!GameManager.Main.AStar.Pathway) return;
+        if (!GameManager.Main.AStar.Pathway) return TreeNodes.Status.FAILURE;
         if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position + new Vector3(0, 2, -1)) < 0.2 && GameManager.Main.AStar.waypoint.Count > 0)
         {
             Pos = GameManager.Main.AStar.coords.Pop();
@@ -104,8 +105,17 @@ public class UnitBaseClass : MonoBehaviour
             GameManager.Main.AStar.RemoveAllMarkers();
             GameManager.Main.AStar.Pathway = false;
             GameManager.Main.AStar.Done = false;
+            GameManager.Main.AStar.SearchStarted = false;
             StartFindingPath = false;
             Moved = true;
+            //this.transform.LookAt(CurrentWaypoint.transform);
+            Quaternion Last = Quaternion.LookRotation(CurrentWaypoint.transform.position + new Vector3(0, 2, -1) - this.transform.position);
+
+            this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Last, RotateSpeed * Time.deltaTime);
+
+            this.transform.Translate(0, 0, Speed * Time.deltaTime);
+
+            return TreeNodes.Status.SUCCESS;
         }
 
         //this.transform.LookAt(CurrentWaypoint.transform);
@@ -114,6 +124,8 @@ public class UnitBaseClass : MonoBehaviour
         this.transform.rotation = Quaternion.Slerp(this.transform.rotation, LookAtWP, RotateSpeed * Time.deltaTime);
 
         this.transform.Translate(0, 0, Speed * Time.deltaTime);
+
+        return TreeNodes.Status.RUNNING;
     }
 
     public bool CanAttack()
@@ -128,11 +140,11 @@ public class UnitBaseClass : MonoBehaviour
     }
 
 
-    public void Attack()
+    public TreeNodes.Status Attack()
     {
         GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, false);
 
-        if (!GameManager.Main.AStar.Done) return;
+        if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
 
         GameManager.Main.AStar.GetPathway();
         if(Ranged && TileEffect == "Sand")
@@ -144,7 +156,7 @@ public class UnitBaseClass : MonoBehaviour
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
-                return;
+                return TreeNodes.Status.FAILURE;
             }
         }
         else if (Ranged && TileEffect == "Mountain")
@@ -156,7 +168,7 @@ public class UnitBaseClass : MonoBehaviour
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
-                return;
+                return TreeNodes.Status.FAILURE;
             }
         }
         else
@@ -168,7 +180,7 @@ public class UnitBaseClass : MonoBehaviour
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
-                return;
+                return TreeNodes.Status.FAILURE;
             }
         }
 
@@ -178,6 +190,7 @@ public class UnitBaseClass : MonoBehaviour
         Attacking = false;
         Action = true;
         GameManager.Main.AStar.Done = false;
+        return TreeNodes.Status.SUCCESS;
     }
 
 

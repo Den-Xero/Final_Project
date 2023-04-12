@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class WarriorAIBehaviour : MonoBehaviour
+public class WarriorAIBehaviour : TreeActions
 {
     
-    bool ConditionFulfilled = true;
     TreeRoot mRoot;
     public enum ActionState { IDLE, WORKING};
     ActionState mState = ActionState.IDLE;
@@ -20,86 +19,49 @@ public class WarriorAIBehaviour : MonoBehaviour
         //make the root node of the entity behaviour tree.
         mRoot = new TreeRoot();
         //Sequence node setup with a condition leaf for refence.
-        TreeSequence Sequence = new TreeSequence("Sequence");
-        TreeLeaf ConditionLeaf = new TreeLeaf("ConditionLeaf", FConditionLeaf);
-        TreeLeaf Action1 = new TreeLeaf("Action1", FAction1);
-        TreeLeaf Action2 = new TreeLeaf("Action2", FAction2);
+        TreeSequence GetNearestPlayerUnit = new TreeSequence("Get Nearest Player Unit");
+        TreeLeaf FindTarget = new TreeLeaf("Find Target", FFindClosestTarget);
+        TreeLeaf CanAttackWithEndTurn = new TreeLeaf("Can Attack With End Turn ", FCanAttackWithEndTurn);
+        TreeLeaf AttackAndSetEndTurn = new TreeLeaf("Attack And Set End Turn", FAttackAndSetEndTurn);
+        TreeSelector CloseEnoughToAttack = new TreeSelector("Close Enough To Attack");
+        TreeSequence AttackWithSkipMovement = new TreeSequence("Attack With Skip Movement");
+        TreeLeaf SetAsMoved = new TreeLeaf("Set As Moved", FSetAsMoved);
+        TreeSelector MoveTowardsTarget = new TreeSelector("Move Towards Target");
+        TreeSequence MoveToTarget = new TreeSequence("Move To Target");
+        TreeLeaf FindGoodHexToMoveTo = new TreeLeaf("FindGoodHexToMoveTo", FFindGoodHexToMoveTo);
+        TreeLeaf Move = new TreeLeaf("Move", FMove);
+        TreeSequence FindGoodMaxRangeMovement = new TreeSequence("Find Good Max Range Movement");
+        TreeLeaf WorkBackFromTargetToFindHex = new TreeLeaf("Work Back From Target To Find Hex", FWorkBackFromTargetToFindHex);
+        TreeSelector CanUnitAttackAnyPlayerUnit = new TreeSelector("Can Unit Attack Any Player Unit");
+        TreeSequence AttackAnyPlayerUnit = new TreeSequence("Attack Any Player Unit");
+        TreeLeaf CanAttackWithoutEndTurn = new TreeLeaf("Can Attack Without End Turn ", FCanAttackWithoutEndTurn);
+        TreeLeaf ReadyEndTurn = new TreeLeaf("Ready End Turn", FAction1);
 
-        //adding leafs to sequence as children including a condition one then adding the sequece to the root.
-        Sequence.AddChild(ConditionLeaf);
-        Sequence.AddChild(Action1);
-        Sequence.AddChild(Action2);
-        mRoot.AddChild(Sequence);
+        //Making the tree with adding all the nodes under one a child of the node, the numbers show what level the node is on so 0 being connected to root level with a node bing 3 needing to move up 3 nodes to get to the root level.
+        /* 1 */GetNearestPlayerUnit.AddChild(FindTarget);
+        /* 1 */GetNearestPlayerUnit.AddChild(CloseEnoughToAttack);
+        /* 2 */CloseEnoughToAttack.AddChild(AttackWithSkipMovement);
+        /* 3 */AttackWithSkipMovement.AddChild(CanAttackWithoutEndTurn);
+        /* 3 */AttackWithSkipMovement.AddChild(SetAsMoved);
+        /* 3 */AttackWithSkipMovement.AddChild(AttackAndSetEndTurn);
+        /* 2 */CloseEnoughToAttack.AddChild(MoveTowardsTarget);
+        /* 3 */MoveTowardsTarget.AddChild(MoveToTarget);
+        /* 4 */MoveToTarget.AddChild(FindGoodHexToMoveTo);
+        /* 4 */MoveToTarget.AddChild(Move);
+        /* 4 */MoveToTarget.AddChild(CanAttackWithEndTurn);
+        /* 4 */MoveToTarget.AddChild(AttackAndSetEndTurn);
+        /* 3 */MoveTowardsTarget.AddChild(FindGoodMaxRangeMovement);
+        /* 4 */FindGoodMaxRangeMovement.AddChild(WorkBackFromTargetToFindHex);
+        /* 4 */FindGoodMaxRangeMovement.AddChild(CanUnitAttackAnyPlayerUnit);
+        /* 5 */CanUnitAttackAnyPlayerUnit.AddChild(AttackAnyPlayerUnit);
+        /* 6 */AttackAnyPlayerUnit.AddChild(CanAttackWithoutEndTurn);
+        /* 6 */AttackAnyPlayerUnit.AddChild(AttackAndSetEndTurn);
+        /* 5 */CanUnitAttackAnyPlayerUnit.AddChild(ReadyEndTurn);
+        /* 0 */mRoot.AddChild(GetNearestPlayerUnit);
 
-        //Selector node setup.
-        TreeSelector Selector = new TreeSelector("Selector");
-        TreeLeaf Action3 = new TreeLeaf("Action3", FAction3);
-        TreeLeaf Action4 = new TreeLeaf("Action4", FAction4);
-
-        //adding leafs to sequence as children then adding the sequece to the root.
-        Selector.AddChild(Action3);
-        Selector.AddChild(Action4);
-        mRoot.AddChild(Selector);
-
-        mRoot.PrintTree();
-        
     }
 
-    //Condition leaf.
-    public TreeNodes.Status FConditionLeaf()
-    {
-        if(ConditionFulfilled) return TreeNodes.Status.SUCCESS;
-        return TreeNodes.Status.FAILURE;
-    }
-
-    //the Actions leafs.
-    public TreeNodes.Status FAction1()
-    {
-        //return Movement(GameObject1.transform.position);
-        return TreeNodes.Status.SUCCESS;
-    }
-
-    public TreeNodes.Status FAction2()
-    {
-        //return Movement(GameObject2.transform.position);
-        return TreeNodes.Status.SUCCESS;
-    }
-
-    public TreeNodes.Status FAction3()
-    {
-        //Movement(GameObject3.transform.position);
-        //make a if for if move is seccessful but next action can no be completed.
-        return TreeNodes.Status.SUCCESS;
-    }
-
-    public TreeNodes.Status FAction4()
-    {
-        //Movement(GameObject4.transform.position);
-        //make a if for if move is seccessful but next action can no be completed.
-        return TreeNodes.Status.SUCCESS;
-    }
-
-    //Movement action to be called by action leafs.
-    TreeNodes.Status Movement(Vector3 destination)
-    {
-        //float DistanceToTarget = Vector3.Distance(destination, this.transform.position);
-        //if(mState == ActionState.IDLE)
-        //{
-        //    mAgent.SetDestination(destination);
-        //    mState = ActionState.WORKING;
-        //}
-        //else if(Vector3.Distance(mAgent.pathEndPosition, destination) >= 2)
-        //{
-        //    mState = ActionState.IDLE;
-        //    return TreeNodes.Status.FAILURE;
-        //}
-        //else if(DistanceToTarget < 2)
-        //{
-        //    mState = ActionState.IDLE;
-        //    return TreeNodes.Status.SUCCESS;
-        //}
-        return TreeNodes.Status.RUNNING;
-    }
+  
 
 
     // Update is called once per frame

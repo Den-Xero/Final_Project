@@ -237,4 +237,17 @@ public class GameMap : MonoBehaviour
         return 0;
     }
 
+    public Hex FindHex(Vector2Int pos)
+    {
+        Hex[] hexes = this.transform.GetComponentsInChildren<Hex>();
+        foreach (Hex h in hexes)
+        {
+            if (h.Coords != pos) continue;
+            return h;
+        }
+        UnityEngine.Debug.LogError("WayPoint not found");
+        return null;
+    }
+
+
 }

@@ -66,17 +66,25 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void EndTurn()
+    public TreeNodes.Status EndTurn()
     {
         if(!CurrentActiveUnit.Moved)
         {
             UnitNotMoved.SetActive(true);
             TimeToDisappear = Time.time + TimeAcive;
-            return;
+            return TreeNodes.Status.FAILURE;
         }
         End = true;
         CurrentActiveUnit.Moved = false;
         CurrentActiveUnit.Action = false;
+        return TreeNodes.Status.SUCCESS;
+    }
+
+    public TreeNodes.Status SetAsMoved()
+    {
+        CurrentActiveUnit.Moved = true;
+        if (CurrentActiveUnit.Moved) return TreeNodes.Status.SUCCESS;
+        return TreeNodes.Status.FAILURE;
     }
 
 

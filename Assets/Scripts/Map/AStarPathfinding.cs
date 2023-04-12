@@ -69,6 +69,7 @@ public class AStarPathfinding : MonoBehaviour
     public bool Done = false;
     public bool Incomplete = false;
     public bool Pathway = false;
+    public bool SearchStarted = false;
     public Stack<GameObject> waypoint = new Stack<GameObject>();
     public Stack<Vector2Int> coords = new Stack<Vector2Int>();
 
@@ -123,14 +124,14 @@ public class AStarPathfinding : MonoBehaviour
         Closed.Clear();
         Closed.Add(StartHex);
         LastPos = StartHex;
-
+        SearchStarted = true;
     }
 
 
-    public void PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
+    public TreeNodes.Status PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
     {
-        if (ThisHex == null) return;
-        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return; } // goal has been reached.
+        if (ThisHex == null) return TreeNodes.Status.FAILURE;
+        if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return TreeNodes.Status.SUCCESS; } // goal has been reached.
         //if (Open.Count == 0) { Debug.Log("End location out of movement range."); Incomplete = true; }
 
         if(!m_GameMap.FlatTop)
@@ -236,7 +237,7 @@ public class AStarPathfinding : MonoBehaviour
             Debug.Log("End location out of movement range."); 
             Incomplete = true; 
             RemoveAllMarkers(); 
-            return;  
+            return TreeNodes.Status.FAILURE;  
         }
 
         if (TFirst)
@@ -253,7 +254,7 @@ public class AStarPathfinding : MonoBehaviour
         Open.RemoveAt(0);
         pm.Marker.GetComponent<Renderer>().material = ClosedMat;
         LastPos = pm;
-
+        return TreeNodes.Status.RUNNING;
     }
 
     bool MarkerNeedUpdate(Vector2Int pos, float g, float h, float f, int t, PathMarker par)
