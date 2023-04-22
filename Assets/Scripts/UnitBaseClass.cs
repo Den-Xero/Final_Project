@@ -5,7 +5,7 @@ using UnityEngine;
 public class UnitBaseClass : MonoBehaviour
 {
     public int Initiative = 0;
-    protected int AttackRange = 0;
+    public int AttackRange = 0;
     protected int Health = 0;
     protected int MaxHealth = 100;
     public string UnitType = "";
@@ -33,6 +33,7 @@ public class UnitBaseClass : MonoBehaviour
     public UnitBaseClass AttackTarget;
     public GameObject CurrentWaypoint;
     public bool StartFindingPath = false;
+    public int AttackTargetDistance = 0;
 
 
     public virtual void UpdateLoop() { }
@@ -128,31 +129,18 @@ public class UnitBaseClass : MonoBehaviour
         return TreeNodes.Status.RUNNING;
     }
 
-    public bool CanAttack()
+    public TreeNodes.Status CanAttack()
     {
-        if(TileEffect == "Water") return false;
+        if(TileEffect == "Water") return TreeNodes.Status.FAILURE;
         if (MovementPointsUsed > MovementPoints - 2)
         {
-            return false;
+            return TreeNodes.Status.FAILURE;
         }
 
-        return true;
-    }
-
-
-    public TreeNodes.Status Attack()
-    {
-        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, false);
-
-        if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
-
-        GameManager.Main.AStar.GetPathway();
-        if(Ranged && TileEffect == "Sand")
+        if (Ranged && TileEffect == "Sand")
         {
-            if (GameManager.Main.AStar.waypoint.Count > AttackRange - 2)
+            if (AttackTargetDistance > AttackRange - 2)
             {
-                GameManager.Main.AStar.waypoint.Clear();
-                GameManager.Main.AStar.RemoveAllMarkers();
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
@@ -161,10 +149,8 @@ public class UnitBaseClass : MonoBehaviour
         }
         else if (Ranged && TileEffect == "Mountain")
         {
-            if (GameManager.Main.AStar.waypoint.Count > AttackRange + 2)
+            if (AttackTargetDistance > AttackRange + 2)
             {
-                GameManager.Main.AStar.waypoint.Clear();
-                GameManager.Main.AStar.RemoveAllMarkers();
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
@@ -173,10 +159,8 @@ public class UnitBaseClass : MonoBehaviour
         }
         else
         {
-            if (GameManager.Main.AStar.waypoint.Count > AttackRange)
+            if (AttackTargetDistance > AttackRange)
             {
-                GameManager.Main.AStar.waypoint.Clear();
-                GameManager.Main.AStar.RemoveAllMarkers();
                 Attacking = false;
                 GameManager.Main.AStar.Done = false;
                 print("Unit not in attack range.");
@@ -184,12 +168,64 @@ public class UnitBaseClass : MonoBehaviour
             }
         }
 
+        return TreeNodes.Status.SUCCESS;
+    }
+
+    public TreeNodes.Status RangeCheckToTarget()
+    {
+        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, 10000, false);
+
+        if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
+
+        GameManager.Main.AStar.GetPathway();
+
+        AttackTargetDistance = GameManager.Main.AStar.waypoint.Count;
+
+        if (AttackTargetDistance > AttackTarget.AttackRange + AttackTarget.MovementPoints - 4)
+        {
+            GameManager.Main.AStar.waypoint.Clear();
+            GameManager.Main.AStar.RemoveAllMarkers();
+            GameManager.Main.AStar.Done = false;
+            GameManager.Main.AStar.SearchStarted = false;
+            print("AI not in target attack range.");
+            return TreeNodes.Status.FAILURE;
+        }
+
+        GameManager.Main.AStar.waypoint.Clear();
+        GameManager.Main.AStar.RemoveAllMarkers();
+        GameManager.Main.AStar.Done = false;
+        GameManager.Main.AStar.SearchStarted = false;
+        print("AI in target attack range.");
+        return TreeNodes.Status.SUCCESS;
+    }
+
+    public TreeNodes.Status MeleeCheckToTarget()
+    {
+        GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, 10000, false);
+
+        if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
+
+        GameManager.Main.AStar.GetPathway();
+
+        AttackTargetDistance = GameManager.Main.AStar.waypoint.Count;
+
+        GameManager.Main.AStar.waypoint.Clear();
+        GameManager.Main.AStar.RemoveAllMarkers();
+        GameManager.Main.AStar.Done = false;
+        GameManager.Main.AStar.SearchStarted = false;
+        print("Melee target distance check successful.");
+        return TreeNodes.Status.SUCCESS;
+    }
+
+
+
+    public TreeNodes.Status Attack()
+    {
         GameManager.Main.AStar.RemoveAllMarkers();
         AttackTarget.TakeDamage(AttackDamage);
         print("Target hit");
         Attacking = false;
         Action = true;
-        GameManager.Main.AStar.Done = false;
         return TreeNodes.Status.SUCCESS;
     }
 

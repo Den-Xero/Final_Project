@@ -21,6 +21,7 @@ public class WarriorAIBehaviour : TreeActions
         //Sequence node setup with a condition leaf for refence.
         TreeSequence GetNearestPlayerUnit = new TreeSequence("Get Nearest Player Unit");
         TreeLeaf FindTarget = new TreeLeaf("Find Target", FFindClosestTarget);
+        TreeLeaf GetDistanceFromTarget = new TreeLeaf("Get Distance From Target", FDistanceToTarget);
         TreeLeaf CanAttackWithEndTurn = new TreeLeaf("Can Attack With End Turn ", FCanAttackWithEndTurn);
         TreeLeaf AttackAndSetEndTurn = new TreeLeaf("Attack And Set End Turn", FAttackAndSetEndTurn);
         TreeSelector CloseEnoughToAttack = new TreeSelector("Close Enough To Attack");
@@ -35,10 +36,11 @@ public class WarriorAIBehaviour : TreeActions
         TreeSelector CanUnitAttackAnyPlayerUnit = new TreeSelector("Can Unit Attack Any Player Unit");
         TreeSequence AttackAnyPlayerUnit = new TreeSequence("Attack Any Player Unit");
         TreeLeaf CanAttackWithoutEndTurn = new TreeLeaf("Can Attack Without End Turn ", FCanAttackWithoutEndTurn);
-        TreeLeaf ReadyEndTurn = new TreeLeaf("Ready End Turn", FAction1);
+        TreeLeaf ReadyEndTurn = new TreeLeaf("Ready End Turn", FReadyEndTurn);
 
         //Making the tree with adding all the nodes under one a child of the node, the numbers show what level the node is on so 0 being connected to root level with a node bing 3 needing to move up 3 nodes to get to the root level.
         /* 1 */GetNearestPlayerUnit.AddChild(FindTarget);
+        /* 1 */GetNearestPlayerUnit.AddChild(GetDistanceFromTarget);
         /* 1 */GetNearestPlayerUnit.AddChild(CloseEnoughToAttack);
         /* 2 */CloseEnoughToAttack.AddChild(AttackWithSkipMovement);
         /* 3 */AttackWithSkipMovement.AddChild(CanAttackWithoutEndTurn);
@@ -62,15 +64,10 @@ public class WarriorAIBehaviour : TreeActions
     }
 
   
-
-
-    // Update is called once per frame
-    void Update()
+    public void TreeUpdate()
     {
-        //will run tree if the tree status is no success full will need to adapted this so it is the right one for the right entity behavior.
-        if(mTreeStatus != TreeNodes.Status.SUCCESS)
-        {
-            mTreeStatus = mRoot.Process();
-        }
+        mRoot.Process();
     }
+
+   
 }

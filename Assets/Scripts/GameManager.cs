@@ -36,8 +36,6 @@ public class GameManager : MonoBehaviour
         Main = this;
         GameBoard = GetComponent<GameMap>();
         AStar = GetComponent<AStarPathfinding>();
-        AiArcher = GetComponent<AIArcher>();
-        UnitIntOrder.Add(AiArcher);
     }
 
     public void SetPlayerArcher(GameObject player)
@@ -50,6 +48,12 @@ public class GameManager : MonoBehaviour
     {
         AiWarrior = AI.GetComponent<AIWarrior>();
         UnitIntOrder.Add(AiWarrior);
+    }
+
+    public void SetAIArcher(GameObject AI)
+    {
+        AiArcher = AI.GetComponent<AIArcher>();
+        UnitIntOrder.Add(AiArcher);
     }
 
     public void MakeIntOrder()
@@ -78,6 +82,19 @@ public class GameManager : MonoBehaviour
         CurrentActiveUnit.Moved = false;
         CurrentActiveUnit.Action = false;
         return TreeNodes.Status.SUCCESS;
+    }
+
+    public void ButtonEndTurn()
+    {
+        if (!CurrentActiveUnit.Moved)
+        {
+            UnitNotMoved.SetActive(true);
+            TimeToDisappear = Time.time + TimeAcive;
+            return;
+        }
+        End = true;
+        CurrentActiveUnit.Moved = false;
+        CurrentActiveUnit.Action = false;
     }
 
     public TreeNodes.Status SetAsMoved()

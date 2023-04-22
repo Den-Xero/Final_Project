@@ -9,9 +9,10 @@ public class PathMarker
     public float G;
     public float H;
     public float F;
-    public int TotalHexesMoved;
+    public int TotalCostOfMove;
     public GameObject Marker;
     public PathMarker Parent;
+    public float DistanceFromTarget;
 
     public PathMarker(Vector2Int hexLocation, float g, float h, float f, int T, GameObject marker, PathMarker parent)
     {
@@ -19,7 +20,7 @@ public class PathMarker
         G = g;
         H = h;
         F = f;
-        TotalHexesMoved = T;
+        TotalCostOfMove = T;
         Marker = marker;
         Parent = parent;
     }
@@ -105,7 +106,7 @@ public class AStarPathfinding : MonoBehaviour
         Done = false;
         RemoveAllMarkers();
 
-        if (!GameManager.Main.PlayerArcher.Moved)
+        if (!GameManager.Main.CurrentActiveUnit.Moved)
         {
             foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
             {
@@ -113,8 +114,8 @@ public class AStarPathfinding : MonoBehaviour
             }
         }
         
-        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.PlayerArcher.Pos);
-        StartHex = new PathMarker(GameManager.Main.PlayerArcher.Pos, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.CurrentActiveUnit.Pos);
+        StartHex = new PathMarker(GameManager.Main.CurrentActiveUnit.Pos, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
 
         //picks second top hex to be the end location.
         Vector3 goalHex = goal.transform.position;
@@ -126,6 +127,190 @@ public class AStarPathfinding : MonoBehaviour
         LastPos = StartHex;
         SearchStarted = true;
     }
+
+    public void BeginSearchWithStartpoint(Hex start,Hex goal)
+    {
+        RemoveAllMarkers();
+
+        Vector3 startHex = start.transform.position;
+        StartHex = new PathMarker(start.Coords, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+
+        //picks second top hex to be the end location.
+        Vector3 goalHex = goal.transform.position;
+        GoalHex = new PathMarker(goal.Coords, 0, 0, 0, 0, Instantiate(GoalMarker, goalHex, Quaternion.identity), null);
+
+        Open.Clear();
+        Closed.Clear();
+        Closed.Add(StartHex);
+        LastPos = StartHex;
+        SearchStarted = true;
+    }
+
+    public void MoveAwayStart()
+    {
+        Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.CurrentActiveUnit.Pos);
+        StartHex = new PathMarker(GameManager.Main.CurrentActiveUnit.Pos, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
+        Open.Clear();
+        Closed.Clear();
+        Closed.Add(StartHex);
+        LastPos = StartHex;
+    }
+
+    public TreeNodes.Status FindMoveAway(PathMarker ThisHex, int MaxMovement, bool TFirst)
+    {
+        if (ThisHex == null) return TreeNodes.Status.FAILURE;
+        
+        if (!m_GameMap.FlatTop)
+        {
+            if (ThisHex.HexLocation.y % 2 == 0)
+            {
+                foreach (Vector2Int dir in m_GameMap.PointTopOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if(movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
+                    if (T > MaxMovement) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
+
+                }
+
+            }
+            else
+            {
+                foreach (Vector2Int dir in m_GameMap.PointTopNoOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
+                    if (T > MaxMovement) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
+
+                }
+
+            }
+        }
+        else
+        {
+            if (ThisHex.HexLocation.x % 2 == 0)
+            {
+                foreach (Vector2Int dir in m_GameMap.FlatTopOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
+                    if (T > MaxMovement) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
+
+                }
+
+            }
+            else
+            {
+                foreach (Vector2Int dir in m_GameMap.FlatTopNoOffsetNeighbours)
+                {
+                    Vector2Int neighbour = dir + ThisHex.HexLocation;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
+                    if (T > MaxMovement) continue;
+                    if (IsInClosed(neighbour)) continue;
+
+                    float G = Vector2.Distance(ThisHex.HexLocation, neighbour) + ThisHex.G;
+                    float H = Vector2.Distance(neighbour, GoalHex.HexLocation);
+                    float F = G + H;
+
+                    GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
+                    PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
+
+                    if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
+                        Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
+
+                }
+
+            }
+        }
+        if (Open.Count == 0)
+        {
+            foreach(PathMarker marker in Closed)
+            {
+                marker.DistanceFromTarget = Vector2.Distance(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos, marker.HexLocation);
+            }
+
+            Closed = Closed.OrderByDescending(p => p.DistanceFromTarget).ToList<PathMarker>();
+
+            PathMarker topClosed = Closed.ElementAt(0);
+
+            if (topClosed == StartHex)
+            {
+                return TreeNodes.Status.FAILURE;
+            }
+
+            BeginSearch(GameManager.Main.GameBoard.FindHex(topClosed.HexLocation));
+            return TreeNodes.Status.SUCCESS;
+        }
+
+        if (TFirst)
+        {
+            Open = Open.OrderBy(p => p.TotalCostOfMove).ThenBy(n => n.F).ThenBy(g => g.H).ToList<PathMarker>();
+        }
+        else
+        {
+            Open = Open.OrderBy(p => p.F).ThenBy(n => n.H).ToList<PathMarker>();
+        }
+
+        PathMarker pm = Open.ElementAt(0);
+        Closed.Add(pm);
+        Open.RemoveAt(0);
+        pm.Marker.GetComponent<Renderer>().material = ClosedMat;
+        LastPos = pm;
+        return TreeNodes.Status.RUNNING;
+    }
+
+
+
+
+
 
 
     public TreeNodes.Status PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
@@ -141,8 +326,10 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.PointTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
-                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
                     if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
@@ -152,6 +339,7 @@ public class AStarPathfinding : MonoBehaviour
 
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
 
                     if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex)) 
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
@@ -164,8 +352,10 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.PointTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
-                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
                     if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
@@ -175,6 +365,7 @@ public class AStarPathfinding : MonoBehaviour
 
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
 
                     if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
@@ -190,8 +381,10 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.FlatTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
-                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
                     if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
@@ -201,6 +394,7 @@ public class AStarPathfinding : MonoBehaviour
 
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
 
                     if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
@@ -213,8 +407,10 @@ public class AStarPathfinding : MonoBehaviour
                 foreach (Vector2Int dir in m_GameMap.FlatTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.HexLocation;
-                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y) continue;
-                    int T = m_GameMap.GetMovementCost(neighbour) + ThisHex.TotalHexesMoved;
+                    if (neighbour.x < 0 || neighbour.x > m_GameMap.GridSize.x - 1 || neighbour.y < 0 || neighbour.y > m_GameMap.GridSize.y - 1) continue;
+                    int movementCost = m_GameMap.GetMovementCost(neighbour);
+                    //if (movementCost == 0) continue;
+                    int T = movementCost + ThisHex.TotalCostOfMove;
                     if (T > MaxMovement) continue;
                     if (IsInClosed(neighbour)) continue;
 
@@ -224,6 +420,7 @@ public class AStarPathfinding : MonoBehaviour
 
                     GameObject PathBlock = Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(neighbour.x, neighbour.y)), Quaternion.identity);
                     PathBlock.GetComponent<Renderer>().material = OpenedMat;
+                    PathBlock.GetComponent<MarkerScript>().Pos = new Vector2Int(neighbour.x, neighbour.y);
 
                     if (!MarkerNeedUpdate(neighbour, G, H, F, T, ThisHex))
                         Open.Add(new PathMarker(neighbour, G, H, F, T, PathBlock, ThisHex));
@@ -242,7 +439,7 @@ public class AStarPathfinding : MonoBehaviour
 
         if (TFirst)
         {
-            Open = Open.OrderBy(p => p.TotalHexesMoved).ThenBy(n => n.F).ThenBy(g => g.H).ToList<PathMarker>();
+            Open = Open.OrderBy(p => p.TotalCostOfMove).ThenBy(n => n.F).ThenBy(g => g.H).ToList<PathMarker>();
         }
         else
         {
@@ -263,12 +460,12 @@ public class AStarPathfinding : MonoBehaviour
         {
             if(p.HexLocation == pos)
             {
-                if (t < p.TotalHexesMoved)
+                if (t < p.TotalCostOfMove)
                 {
                     p.G = g;
                     p.H = h;
                     p.F = f;
-                    p.TotalHexesMoved = t;
+                    p.TotalCostOfMove = t;
                     p.Parent = par;
                     return true;
                 }
@@ -290,11 +487,6 @@ public class AStarPathfinding : MonoBehaviour
         return false;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     public int GetPathway()
     {
@@ -314,7 +506,7 @@ public class AStarPathfinding : MonoBehaviour
         }
         
         Instantiate(Path, m_GameMap.GetPositionFromCoordinate(new Vector2Int(StartHex.HexLocation.x, StartHex.HexLocation.y)), Quaternion.identity);
-        return LastPos.TotalHexesMoved;
+        return LastPos.TotalCostOfMove;
     }
 
     // Update is called once per frame

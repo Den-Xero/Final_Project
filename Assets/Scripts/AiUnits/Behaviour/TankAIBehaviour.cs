@@ -6,7 +6,6 @@ using UnityEngine.AI;
 public class TankAIBehaviour: TreeActions
 {
     
-    bool ConditionFulfilled = true;
     TreeRoot mRoot;
     public enum ActionState { IDLE, WORKING};
     ActionState mState = ActionState.IDLE;
@@ -64,12 +63,8 @@ public class TankAIBehaviour: TreeActions
 
 
     // Update is called once per frame
-    void Update()
+    public void TreeUpdate()
     {
-        //will run tree if the tree status is no success full will need to adapted this so it is the right one for the right entity behavior.
-        if(mTreeStatus != TreeNodes.Status.SUCCESS)
-        {
-            mTreeStatus = mRoot.Process();
-        }
+        mRoot.Process();
     }
 }

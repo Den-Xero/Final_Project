@@ -5,17 +5,16 @@ using UnityEngine;
 
 public class AIArcher : UnitBaseClass
 {
-    
+    ArcherAIBehaviour Tree;
     private void Awake()
     {
         ArcherSetUp();
+        Tree = GetComponent<ArcherAIBehaviour>();
     }
 
     public override void UpdateLoop()
     {
-        print("AI Archer Takes turn");
-        Moved = true;
-        GameManager.Main.EndTurn();
+        Tree.TreeUpdate();
     }
 
 }

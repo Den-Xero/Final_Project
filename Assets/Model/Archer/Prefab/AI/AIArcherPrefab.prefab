@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 6889076338970591452}
   - component: {fileID: 3889855843208451748}
   - component: {fileID: 6114126997112441814}
-  - component: {fileID: 3007223071648304586}
+  - component: {fileID: 5877339737598967363}
+  - component: {fileID: 4046350187267893845}
   m_Layer: 0
-  m_Name: AIWarriorPrefab
+  m_Name: AIArcherPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -62,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 1a828377633f3b84abfbc7845b4db437, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -84,7 +85,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3007223071648304586
+--- !u!114 &5877339737598967363
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,9 +94,34 @@ MonoBehaviour:
   m_GameObject: {fileID: 8336277389714645377}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 320d4cb6229cf0f4bbbebabfcd344b22, type: 3}
+  m_Script: {fileID: 11500000, guid: ba2815868b570644eaa19cad650d9593, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Initiative: 0
+  UnitType: 
+  TileEffect: 
+  AttackDamage: 0
   PlayerUnit: 0
   Moved: 0
+  Action: 0
+  Attacking: 0
+  Alive: 1
+  Ranged: 0
+  MovementPoints: 4
+  MovementPointsUsed: 0
+  Pos: {x: 0, y: 0}
+  AttackTarget: {fileID: 0}
+  CurrentWaypoint: {fileID: 0}
+  StartFindingPath: 0
+--- !u!114 &4046350187267893845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8336277389714645377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3612bfffdd1ed0e45b30a5167d4f5b66, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

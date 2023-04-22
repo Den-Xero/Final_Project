@@ -20,7 +20,9 @@ public class GameMap : MonoBehaviour
     [Header("Entities")]
     public GameObject Archer;
     public GameObject AiWarrior;
+    public GameObject AiArcher;
     bool PlayerSpawned = false;
+    int EnemiesSpawned = 0;
 
     private void Awake()
     {
@@ -136,13 +138,46 @@ public class GameMap : MonoBehaviour
                     }
                 }
 
-                if(x == 5 && y == 5)
+                if(x == GridSize.x - 3 && y == GridSize.y - 1 && EnemiesSpawned < 1)
                 {
                     var temp = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
                     temp.transform.SetParent(transform, true);
                     GameManager.Main.SetAIWarrior(temp);
                     GameManager.Main.AiWarrior.Pos = new Vector2Int(x, y);
+                    EnemiesSpawned++;
                 }
+                //else if (x == GridSize.x - 4 && y == GridSize.y - 1 && EnemiesSpawned < 1)
+                //{
+                //    var temp = Instantiate(AiArcher, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                //    temp.transform.SetParent(transform, true);
+                //    GameManager.Main.SetAIArcher(temp);
+                //    GameManager.Main.AiArcher.Pos = new Vector2Int(x, y);
+                //    EnemiesSpawned++;
+                //}
+                //else if(x > 2 && x < GridSize.x - 2 && y > GridSize.y - 2 && EnemiesSpawned != 2)
+                //{
+                //    int spawn = Random.Range(0, 2);
+                //    if (spawn == 0)
+                //    {
+                //        if(EnemiesSpawned == 0)
+                //        {
+                //            var temp = Instantiate(AiArcher, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
+                //            temp.transform.SetParent(transform, true);
+                //            GameManager.Main.SetAIArcher(temp);
+                //            GameManager.Main.AiArcher.Pos = new Vector2Int(x, y);
+                //            EnemiesSpawned++;
+                //        }
+                //        else
+                //        {
+                //            var temp = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                //            temp.transform.SetParent(transform, true);
+                //            GameManager.Main.SetAIWarrior(temp);
+                //            GameManager.Main.AiWarrior.Pos = new Vector2Int(x, y);
+                //            EnemiesSpawned++;
+                //        }
+                        
+                //    }
+                //}
 
                 Tile.transform.SetParent(transform, true);
                 

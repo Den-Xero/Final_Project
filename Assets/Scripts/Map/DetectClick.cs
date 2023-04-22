@@ -5,6 +5,7 @@ using UnityEngine;
 public class DetectClick : MonoBehaviour
 {
     bool EnemyAtLocation = false;
+    public Vector2Int Pos;
     void OnMouseDown()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -31,7 +32,7 @@ public class DetectClick : MonoBehaviour
                 {
                     if(GameManager.Main.PlayerArcher.Action) { print("Unit action used"); return; }
                     EnemyAtLocation = false;
-                    if (!GameManager.Main.PlayerArcher.CanAttack()) { print("Unit has moved too far to attack this turn."); return; }
+                    if (GameManager.Main.PlayerArcher.CanAttack() == TreeNodes.Status.FAILURE) { print("Unit has moved too far to attack this turn."); return; }
                     foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
                     {
                         if (unit.Pos == par.Coords && !unit.PlayerUnit && unit.Alive) 

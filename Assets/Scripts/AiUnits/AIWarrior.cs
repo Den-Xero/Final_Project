@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class AIWarrior : UnitBaseClass
 {
+    WarriorAIBehaviour Tree;
+
     private void Awake()
     {
         WarriorSetUp();
+        Tree = GetComponent<WarriorAIBehaviour>();
     }
 
     public override void UpdateLoop()
     {
-        print(Health);
-        Moved = true;
-        GameManager.Main.EndTurn();
+        Tree.TreeUpdate();
     }
 }
