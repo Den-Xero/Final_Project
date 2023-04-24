@@ -6,7 +6,7 @@ public class UnitBaseClass : MonoBehaviour
 {
     public int Initiative = 0;
     public int AttackRange = 0;
-    protected int Health = 0;
+    public int Health = 0;
     protected int MaxHealth = 100;
     public string UnitType = "";
     public string TileEffect = "";

@@ -33,7 +33,7 @@ public class ArcherAIBehaviour : TreeActions
         TreeLeaf SetAsMoved = new TreeLeaf("Set As Moved", FSetAsMoved);
         TreeSelector MoveTowardsTarget = new TreeSelector("Move Towards Target");
         TreeSequence MoveToTarget = new TreeSequence("Move To Target");
-        TreeLeaf FindGoodHexToMoveTo = new TreeLeaf("FindGoodHexToMoveTo", FMoveSoCanAttack);
+        TreeLeaf MoveSoCanAttack = new TreeLeaf("FindGoodHexToMoveTo", FMoveSoCanAttack);
         TreeLeaf Move = new TreeLeaf("Move", FMoveToAttack);
         TreeSequence FindGoodMaxRangeMovement = new TreeSequence("Find Good Max Range Movement");
         TreeLeaf WorkBackFromTargetToFindHex = new TreeLeaf("Work Back From Target To Find Hex", FWorkBackFromTargetToFindHex);
@@ -58,7 +58,7 @@ public class ArcherAIBehaviour : TreeActions
         /* 4 */AttackWithSkipMovement.AddChild(AttackAndSetEndTurn);
         /* 3 */CloseEnoughToAttack.AddChild(MoveTowardsTarget);
         /* 4 */MoveTowardsTarget.AddChild(MoveToTarget);
-        /* 5 */MoveToTarget.AddChild(FindGoodHexToMoveTo);
+        /* 5 */MoveToTarget.AddChild(MoveSoCanAttack);
         /* 5 */MoveToTarget.AddChild(Move);
         /* 5 */MoveToTarget.AddChild(CanAttackWithEndTurn);
         /* 5 */MoveToTarget.AddChild(AttackAndSetEndTurn);

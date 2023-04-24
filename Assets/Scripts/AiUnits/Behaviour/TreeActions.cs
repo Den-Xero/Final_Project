@@ -15,13 +15,9 @@ public class TreeActions : MonoBehaviour
     bool DoOnce = false;
     bool DoOncePath = false;
     bool Finished = false;
-    //Condition leaf.
-    protected TreeNodes.Status FConditionLeaf()
-    {
-        if (true) return TreeNodes.Status.SUCCESS;
-        //return TreeNodes.Status.FAILURE;
-    }
 
+
+    //Condition leaf.
     protected TreeNodes.Status FDistanceToTarget()
     {
         Debug.Log("Find distance to target " + GameManager.Main.CurrentActiveUnit.name);
@@ -64,6 +60,130 @@ public class TreeActions : MonoBehaviour
             {
                 currentClosest = unit;
                 currentClosestDistance = tempDistance;
+            }
+        }
+
+        if (currentClosest != null)
+        {
+            GameManager.Main.CurrentActiveUnit.AttackTarget = currentClosest;
+            Debug.Log("Successful in finding target " + GameManager.Main.CurrentActiveUnit.name);
+            return TreeNodes.Status.SUCCESS;
+        }
+        Debug.Log("Failed at finding target " + GameManager.Main.CurrentActiveUnit.name);
+        return TreeNodes.Status.FAILURE;
+    }
+
+    protected TreeNodes.Status FFindTargetWithHighestHealth()
+    {
+        UnitBaseClass currentHighest = null;
+        float currentHighestHealth = 0;
+
+        foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+        {
+            if (!unit.PlayerUnit) continue;
+
+            if (currentHighest == null)
+            {
+                currentHighest = unit;
+                currentHighestHealth = unit.Health;
+                continue;
+            }
+
+            if (unit.Health > currentHighestHealth)
+            {
+                currentHighest = unit;
+                currentHighestHealth = unit.Health;
+            }
+        }
+
+        if (currentHighest != null)
+        {
+            GameManager.Main.CurrentActiveUnit.AttackTarget = currentHighest;
+            Debug.Log("Successful in finding target " + GameManager.Main.CurrentActiveUnit.name);
+            return TreeNodes.Status.SUCCESS;
+        }
+        Debug.Log("Failed at finding target " + GameManager.Main.CurrentActiveUnit.name);
+        return TreeNodes.Status.FAILURE;
+    }
+
+    protected TreeNodes.Status FFindTargetWithLowestHealth()
+    {
+        UnitBaseClass currentLowest = null;
+        float currentLowestHealth = 0;
+
+        foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+        {
+            if (!unit.PlayerUnit) continue;
+
+            if (currentLowest == null)
+            {
+                currentLowest = unit;
+                currentLowestHealth = unit.Health;
+                continue;
+            }
+
+            if (unit.Health < currentLowestHealth)
+            {
+                currentLowest = unit;
+                currentLowestHealth = unit.Health;
+            }
+        }
+
+        if (currentLowest != null)
+        {
+            GameManager.Main.CurrentActiveUnit.AttackTarget = currentLowest;
+            Debug.Log("Successful in finding target " + GameManager.Main.CurrentActiveUnit.name);
+            return TreeNodes.Status.SUCCESS;
+        }
+        Debug.Log("Failed at finding target " + GameManager.Main.CurrentActiveUnit.name);
+        return TreeNodes.Status.FAILURE;
+    }
+
+    protected TreeNodes.Status FFindClosestTargetToLowHealthAIUnit()
+    {
+        UnitBaseClass currentLowestHealthTeamMate = null;
+        float currentLowestHealth = 0;
+        UnitBaseClass currentClosest = null;
+        float currentClosestDistance = 100;
+        float tempDistance;
+
+        foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+        {
+            if (unit.PlayerUnit || unit == GameManager.Main.CurrentActiveUnit) continue;
+
+            if(currentLowestHealthTeamMate == null)
+            {
+                currentLowestHealthTeamMate = unit;
+                currentLowestHealth = unit.Health;
+                continue;
+            }
+
+            if(unit.Health < currentLowestHealth)
+            {
+                currentLowestHealthTeamMate = unit;
+                currentLowestHealth = unit.Health;
+            }
+        }
+
+
+        if(currentLowestHealthTeamMate != null)
+        {
+            foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+            {
+                if (!unit.PlayerUnit) continue;
+                if (currentClosest == null)
+                {
+                    currentClosest = unit;
+                    currentClosestDistance = Vector3.Distance(unit.transform.position, currentLowestHealthTeamMate.transform.position);
+                    continue;
+                }
+
+                tempDistance = Vector3.Distance(unit.transform.position, currentLowestHealthTeamMate.transform.position);
+                if (tempDistance < currentClosestDistance)
+                {
+                    currentClosest = unit;
+                    currentClosestDistance = tempDistance;
+                }
             }
         }
 
@@ -181,11 +301,6 @@ public class TreeActions : MonoBehaviour
     }
 
     //the Actions leafs.
-    protected TreeNodes.Status FAction1()
-    {
-        //return Movement(GameObject1.transform.position);
-        return TreeNodes.Status.SUCCESS;
-    }
 
     protected TreeNodes.Status FMoveAwayFromTarget()
     {
@@ -239,13 +354,6 @@ public class TreeActions : MonoBehaviour
         Debug.Log("Ready end turn " + GameManager.Main.CurrentActiveUnit.name);
         return GameManager.Main.EndTurn();
     }
-
-    protected TreeNodes.Status FAction2()
-    {
-        //return Movement(GameObject2.transform.position);
-        return TreeNodes.Status.SUCCESS;
-    }
-
 
     
     TreeNodes.Status FindWorkBackHex()

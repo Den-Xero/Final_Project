@@ -20,27 +20,27 @@ public class MageAIBehaviour : TreeActions
         mRoot = new TreeRoot();
         //Sequence node setup with a condition leaf for refence.
         TreeSequence GetHighestHealthPlayerUnit = new TreeSequence("Get Nearest Player Unit");
-        TreeLeaf FindTarget = new TreeLeaf("Find Target", FConditionLeaf);
+        TreeLeaf FindTarget = new TreeLeaf("Find Target", FFindTargetWithHighestHealth);
         TreeSelector IsTargetTooClose = new TreeSelector("Is Target Too Close");
         TreeSequence TargetTooClose = new TreeSequence("Target To Close");
-        TreeLeaf DistanceToTarget = new TreeLeaf("Distance To Target", FConditionLeaf);
-        TreeLeaf MoveAwayFromTarget = new TreeLeaf("Move Away From Target", FAction1);
+        TreeLeaf DistanceToTarget = new TreeLeaf("Distance To Target", FDistanceToTarget);
+        TreeLeaf MoveAwayFromTarget = new TreeLeaf("Move Away From Target", FMoveAwayFromTarget);
         TreeSequence Attack = new TreeSequence("Attack");
-        TreeLeaf CanAttackWithEndTurn = new TreeLeaf("Can Attack With End Turn ", FConditionLeaf);
-        TreeLeaf AttackAndSetEndTurn = new TreeLeaf("Attack And Set End Turn", FAction2);
+        TreeLeaf CanAttackWithEndTurn = new TreeLeaf("Can Attack With End Turn ", FCanAttackWithEndTurn);
+        TreeLeaf AttackAndSetEndTurn = new TreeLeaf("Attack And Set End Turn", FAttackAndSetEndTurn);
         TreeSelector CloseEnoughToAttack = new TreeSelector("Close Enough To Attack");
         TreeSequence AttackWithSkipMovement = new TreeSequence("Attack With Skip Movement");
-        TreeLeaf SetAsMoved = new TreeLeaf("Set As Moved", FAction1);
+        TreeLeaf SetAsMoved = new TreeLeaf("Set As Moved", FSetAsMoved);
         TreeSelector MoveTowardsTarget = new TreeSelector("Move Towards Target");
         TreeSequence MoveToTarget = new TreeSequence("Move To Target");
-        TreeLeaf FindGoodHexToMoveTo = new TreeLeaf("FindGoodHexToMoveTo", FConditionLeaf);
-        TreeLeaf Move = new TreeLeaf("Move", FAction1);
+        TreeLeaf MoveSoCanAttack = new TreeLeaf("FindGoodHexToMoveTo", FMoveSoCanAttack);
+        TreeLeaf Move = new TreeLeaf("Move", FMoveToAttack);
         TreeSequence FindGoodMaxRangeMovement = new TreeSequence("Find Good Max Range Movement");
-        TreeLeaf WorkBackFromTargetToFindHex = new TreeLeaf("Work Back From Target To Find Hex", FAction1);
+        TreeLeaf WorkBackFromTargetToFindHex = new TreeLeaf("Work Back From Target To Find Hex", FWorkBackFromTargetToFindHex);
         TreeSelector CanUnitAttackAnyPlayerUnit = new TreeSelector("Can Unit Attack Any Player Unit");
         TreeSequence AttackAnyPlayerUnit = new TreeSequence("Attack Any Player Unit");
-        TreeLeaf CanAttackWithoutEndTurn = new TreeLeaf("Can Attack Without End Turn ", FConditionLeaf);
-        TreeLeaf ReadyEndTurn = new TreeLeaf("Ready End Turn", FAction1);
+        TreeLeaf CanAttackWithoutEndTurn = new TreeLeaf("Can Attack Without End Turn ", FCanAttackWithoutEndTurn);
+        TreeLeaf ReadyEndTurn = new TreeLeaf("Ready End Turn", FReadyEndTurn);
 
         //Making the tree with adding all the nodes under one a child of the node, the numbers show what level the node is on so 0 being connected to root level with a node bing 3 needing to move up 3 nodes to get to the root level.
         /* 1 */GetHighestHealthPlayerUnit.AddChild(FindTarget);
@@ -58,7 +58,7 @@ public class MageAIBehaviour : TreeActions
         /* 4 */AttackWithSkipMovement.AddChild(AttackAndSetEndTurn);
         /* 3 */CloseEnoughToAttack.AddChild(MoveTowardsTarget);
         /* 4 */MoveTowardsTarget.AddChild(MoveToTarget);
-        /* 5 */MoveToTarget.AddChild(FindGoodHexToMoveTo);
+        /* 5 */MoveToTarget.AddChild(MoveSoCanAttack);
         /* 5 */MoveToTarget.AddChild(Move);
         /* 5 */MoveToTarget.AddChild(CanAttackWithEndTurn);
         /* 5 */MoveToTarget.AddChild(AttackAndSetEndTurn);
