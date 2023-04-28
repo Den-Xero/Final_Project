@@ -97,7 +97,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67eb1e31ffb2b8d43a450c625977ecca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Avatar: {fileID: 21300000, guid: 1afe1a297272fde4aae5fdf0fcfcd207, type: 3}
+  PlayerID: 0
+  AIID: 0
   Initiative: 0
+  AttackRange: 0
+  Health: 0
   UnitType: 
   TileEffect: 
   AttackDamage: 0
@@ -113,6 +118,7 @@ MonoBehaviour:
   AttackTarget: {fileID: 0}
   CurrentWaypoint: {fileID: 0}
   StartFindingPath: 0
+  AttackTargetDistance: 0
 --- !u!114 &6063955443256579870
 MonoBehaviour:
   m_ObjectHideFlags: 0

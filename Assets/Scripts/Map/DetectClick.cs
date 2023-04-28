@@ -8,6 +8,7 @@ public class DetectClick : MonoBehaviour
     public Vector2Int Pos;
     void OnMouseDown()
     {
+        if(!GameManager.Main.CurrentActiveUnit.PlayerUnit) return;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
 
@@ -19,34 +20,34 @@ public class DetectClick : MonoBehaviour
                 // Do something with the clicked object
                 //Debug.Log("Clicked on " + gameObject.name);
                 Hex par = GetComponentInParent<Hex>();
-                if (!GameManager.Main.PlayerArcher.Moved)
+                if (!GameManager.Main.CurrentActiveUnit.Moved)
                 {
                     GameManager.Main.AStar.BeginSearch(par);
                     GameManager.Main.AStar.Pathway = false;
                     GameManager.Main.AStar.Incomplete = false;
                     GameManager.Main.AStar.Done = false;
-                    GameManager.Main.PlayerArcher.StartFindingPath = false;
+                    GameManager.Main.CurrentActiveUnit.StartFindingPath = false;
                     GameManager.Main.CurrentActiveUnit.TileEffect = par.Effect;
                 }
                 else
                 {
-                    if(GameManager.Main.PlayerArcher.Action) { print("Unit action used"); return; }
+                    if(GameManager.Main.CurrentActiveUnit.Action) { print("Unit action used"); return; }
                     EnemyAtLocation = false;
-                    if (GameManager.Main.PlayerArcher.CanAttack() == TreeNodes.Status.FAILURE) { print("Unit has moved too far to attack this turn."); return; }
+                    if (GameManager.Main.CurrentActiveUnit.CanAttack() == TreeNodes.Status.FAILURE) { print("Unit can not attack this turn."); return; }
                     foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
                     {
                         if (unit.Pos == par.Coords && !unit.PlayerUnit && unit.Alive) 
                         {
                             print("A unit is at that location"); 
                             EnemyAtLocation = true; 
-                            GameManager.Main.PlayerArcher.AttackTarget = unit; 
+                            GameManager.Main.CurrentActiveUnit.AttackTarget = unit; 
                             break; 
                         }
                     }
                     if(!EnemyAtLocation) { print("No unit at location"); return; }
-                    GameManager.Main.PlayerArcher.Attacking = true;
+                    GameManager.Main.CurrentActiveUnit.Attacking = true;
                     GameManager.Main.AStar.BeginSearch(par);
-                    GameManager.Main.PlayerArcher.Attack();
+                    GameManager.Main.CurrentActiveUnit.Attack();
                 }
 
             }

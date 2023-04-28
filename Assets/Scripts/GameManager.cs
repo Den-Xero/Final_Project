@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -11,19 +12,68 @@ public class GameManager : MonoBehaviour
     public static GameManager Main { get; private set; }
     public GameMap GameBoard { get; private set; }
     public AStarPathfinding AStar { get; private set; }
-    public PlayerArcher PlayerArcher { get; private set; }
-    public AIArcher AiArcher { get; private set; }
-    public AIWarrior AiWarrior { get; private set; }
+    public UnitBaseClass CurrentActiveUnit { get; private set; }
 
-    public GameObject UnitNotMoved;
+    
+    [SerializeField] GameObject UnitNotMoved;
     float TimeAcive = 5f;
     float TimeToDisappear;
     public List<UnitBaseClass> UnitIntOrder = new List<UnitBaseClass>();
 
     bool End = false;
-    public UnitBaseClass CurrentActiveUnit;
     bool StarGame = false;
     int CurrentOrderNum = 0;
+
+    [Header("UI")]
+    [SerializeField] List<Image> PlayerAvatar;
+    [SerializeField] List<Image> AIAvatar;
+    [SerializeField] List<Image> TurnTracker;
+    [SerializeField] List<Slider> PlayerHealthbars;
+    [SerializeField] List<Slider> AIHealthbars;
+    [SerializeField] List<Image> PlayerFills;
+    [SerializeField] List<Image> AIFills;
+    [SerializeField] Gradient HealthBarGradient;
+    [SerializeField] List<GameObject> TurnTrackerArrow;
+    int CurrentActiveArrow = 0;
+
+    public void UISetUp()
+    {
+        int i = 0;
+        foreach (UnitBaseClass unit in UnitIntOrder)
+        {
+            if(unit.PlayerUnit)
+            {
+                PlayerAvatar[unit.PlayerID - 1].sprite = unit.Avatar;
+                PlayerHealthbars[unit.PlayerID - 1].maxValue = unit.MaxHealth;
+                PlayerHealthbars[unit.PlayerID - 1].value = unit.MaxHealth;
+                PlayerFills[unit.PlayerID - 1].color = HealthBarGradient.Evaluate(1f);
+            }
+            else
+            {
+                AIAvatar[unit.AIID - 1].sprite = unit.Avatar;
+                AIHealthbars[unit.AIID - 1].maxValue = unit.MaxHealth;
+                AIHealthbars[unit.AIID - 1].value = unit.MaxHealth;
+                AIFills[unit.AIID - 1].color = HealthBarGradient.Evaluate(1f);
+            }
+            TurnTracker[i].sprite = unit.Avatar;
+            i++;
+        }
+        TurnTrackerArrow[0].SetActive(true);
+    }
+
+    public void SetHealthSlider(int ID, int Health, bool Player)
+    {
+        if(Player)
+        {
+            PlayerHealthbars[ID - 1].value = Health;
+            PlayerFills[ID - 1].color = HealthBarGradient.Evaluate(PlayerHealthbars[ID - 1].normalizedValue);
+        }
+        else
+        {
+            AIHealthbars[ID - 1].value = Health;
+            AIFills[ID - 1].color = HealthBarGradient.Evaluate(AIHealthbars[ID - 1].normalizedValue);
+        }
+    }
 
     private void Awake()
     {
@@ -38,22 +88,10 @@ public class GameManager : MonoBehaviour
         AStar = GetComponent<AStarPathfinding>();
     }
 
-    public void SetPlayerArcher(GameObject player)
-    {
-        PlayerArcher = player.GetComponent<PlayerArcher>();
-        UnitIntOrder.Add(PlayerArcher);
-    }
 
-    public void SetAIWarrior(GameObject AI)
+    public void UnitSetUp(UnitBaseClass unit)
     {
-        AiWarrior = AI.GetComponent<AIWarrior>();
-        UnitIntOrder.Add(AiWarrior);
-    }
-
-    public void SetAIArcher(GameObject AI)
-    {
-        AiArcher = AI.GetComponent<AIArcher>();
-        UnitIntOrder.Add(AiArcher);
+        UnitIntOrder.Add(unit);
     }
 
     public void MakeIntOrder()
@@ -81,11 +119,22 @@ public class GameManager : MonoBehaviour
         End = true;
         CurrentActiveUnit.Moved = false;
         CurrentActiveUnit.Action = false;
+        TurnTrackerArrow[CurrentActiveArrow].SetActive(false);
+        if (CurrentActiveArrow == TurnTrackerArrow.Count - 1)
+        {
+            CurrentActiveArrow = 0;
+        }
+        else
+        {
+            CurrentActiveArrow++;
+        }
+        TurnTrackerArrow[CurrentActiveArrow].SetActive(true);
         return TreeNodes.Status.SUCCESS;
     }
 
     public void ButtonEndTurn()
     {
+        if(!CurrentActiveUnit.PlayerUnit) return;
         if (!CurrentActiveUnit.Moved)
         {
             UnitNotMoved.SetActive(true);
@@ -95,6 +144,16 @@ public class GameManager : MonoBehaviour
         End = true;
         CurrentActiveUnit.Moved = false;
         CurrentActiveUnit.Action = false;
+        TurnTrackerArrow[CurrentActiveArrow].SetActive(false);
+        if(CurrentActiveArrow == TurnTrackerArrow.Count - 1)
+        {
+            CurrentActiveArrow = 0;
+        }
+        else
+        {
+            CurrentActiveArrow++;
+        }
+        TurnTrackerArrow[CurrentActiveArrow].SetActive(true);
     }
 
     public TreeNodes.Status SetAsMoved()
@@ -110,6 +169,27 @@ public class GameManager : MonoBehaviour
     {
         if(!StarGame) return;
         if(UnitNotMoved.active && Time.time >= TimeToDisappear) UnitNotMoved.SetActive(false);
+        int playerUnitsAlive = 0;
+        int aiUnitsAlive = 0;
+        foreach(UnitBaseClass unit in UnitIntOrder)
+        {
+            if (unit.PlayerUnit)
+            {
+                playerUnitsAlive++;
+            }
+            else
+            {
+                aiUnitsAlive++;
+            }
+        }
+        if(playerUnitsAlive == 0)
+        {
+            SceneManager.LoadScene("LossScene");
+        }
+        else if(aiUnitsAlive == 0)
+        {
+            SceneManager.LoadScene("WinScene");
+        }
         if(End)
         {
             if (UnitIntOrder.Count <= CurrentOrderNum + 1)

@@ -19,9 +19,16 @@ public class GameMap : MonoBehaviour
 
     [Header("Entities")]
     public GameObject Archer;
+    public GameObject Warrior;
+    public GameObject Rogue;
+    public GameObject Tank;
+    public GameObject Mage;
     public GameObject AiWarrior;
     public GameObject AiArcher;
-    bool PlayerSpawned = false;
+    public GameObject AiRogue;
+    public GameObject AiTank;
+    public GameObject AiMage;
+    int PlayerSpawned = 0;
     int EnemiesSpawned = 0;
 
     private void Awake()
@@ -77,7 +84,8 @@ public class GameMap : MonoBehaviour
 
     public void DrawGrid()
     {
-        PlayerSpawned = false;
+        PlayerSpawned = 0;
+        EnemiesSpawned = 0;
         for (int y = 0; y < GridSize.y; y++)
         {
             for (int x = 0; x < GridSize.x; x++)
@@ -115,69 +123,55 @@ public class GameMap : MonoBehaviour
                 Hex.SetMesh(Mat[RandomNumber]);
                 Hex.DrawMesh();
 
-                if(x == GridSize.x - 3 && y == 1 && !PlayerSpawned)
+                if(x == GridSize.x - 2 && y == 1 && PlayerSpawned < 4)
                 {
-                    var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
-                    temp.transform.SetParent(transform, true);
-                    GameManager.Main.SetPlayerArcher(temp);
-                    GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
-                    //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
-                    PlayerSpawned = true;
+                    PlayerTypeToSpawn(x, y);
                 }
-                else if(x > 2 && x < GridSize.x - 2 && y < 2 && !PlayerSpawned)
+                else if (x == GridSize.x - 3 && y == 1 && PlayerSpawned < 3)
+                {
+                    PlayerTypeToSpawn(x, y);
+                }
+                else if (x == GridSize.x - 4 && y == 1 && PlayerSpawned < 2)
+                {
+                    PlayerTypeToSpawn(x, y);
+                }
+                else if (x == GridSize.x - 5 && y == 1 && PlayerSpawned < 1)
+                {
+                    PlayerTypeToSpawn(x, y);
+                }
+                else if(x > 2 && x < GridSize.x - 2 && y < 2 && PlayerSpawned < 4)
                 {
                     int spawn = Random.Range(0, 5);
                     if (spawn == 2)
                     {
-                        var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
-                        temp.transform.SetParent(transform, true);
-                        GameManager.Main.SetPlayerArcher(temp);
-                        GameManager.Main.PlayerArcher.Pos = new Vector2Int(x, y);
-                        //UnityEngine.Debug.Log(GameManager.Main.PlayerArcher.Pos);
-                        PlayerSpawned = true;
+                        PlayerTypeToSpawn(x, y);
                     }
                 }
 
-                if(x == GridSize.x - 3 && y == GridSize.y - 1 && EnemiesSpawned < 1)
+                if(x == GridSize.x - 2 && y == GridSize.y - 1 && EnemiesSpawned < 4)
                 {
-                    var temp = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
-                    temp.transform.SetParent(transform, true);
-                    GameManager.Main.SetAIWarrior(temp);
-                    GameManager.Main.AiWarrior.Pos = new Vector2Int(x, y);
-                    EnemiesSpawned++;
+                    AITypeToSpawn(x, y);
                 }
-                //else if (x == GridSize.x - 4 && y == GridSize.y - 1 && EnemiesSpawned < 1)
-                //{
-                //    var temp = Instantiate(AiArcher, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
-                //    temp.transform.SetParent(transform, true);
-                //    GameManager.Main.SetAIArcher(temp);
-                //    GameManager.Main.AiArcher.Pos = new Vector2Int(x, y);
-                //    EnemiesSpawned++;
-                //}
-                //else if(x > 2 && x < GridSize.x - 2 && y > GridSize.y - 2 && EnemiesSpawned != 2)
-                //{
-                //    int spawn = Random.Range(0, 2);
-                //    if (spawn == 0)
-                //    {
-                //        if(EnemiesSpawned == 0)
-                //        {
-                //            var temp = Instantiate(AiArcher, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
-                //            temp.transform.SetParent(transform, true);
-                //            GameManager.Main.SetAIArcher(temp);
-                //            GameManager.Main.AiArcher.Pos = new Vector2Int(x, y);
-                //            EnemiesSpawned++;
-                //        }
-                //        else
-                //        {
-                //            var temp = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
-                //            temp.transform.SetParent(transform, true);
-                //            GameManager.Main.SetAIWarrior(temp);
-                //            GameManager.Main.AiWarrior.Pos = new Vector2Int(x, y);
-                //            EnemiesSpawned++;
-                //        }
-                        
-                //    }
-                //}
+                else if (x == GridSize.x - 3 && y == GridSize.y - 1 && EnemiesSpawned < 3)
+                {
+                    AITypeToSpawn(x, y);
+                }
+                else if (x == GridSize.x - 4 && y == GridSize.y - 1 && EnemiesSpawned < 2)
+                {
+                    AITypeToSpawn(x, y);
+                }
+                else if (x == GridSize.x - 5 && y == GridSize.y - 1 && EnemiesSpawned < 1)
+                {
+                    AITypeToSpawn(x, y);
+                }
+                else if (x > 2 && x < GridSize.x - 2 && y > GridSize.y - 3 && EnemiesSpawned < 4)
+                {
+                    int spawn = Random.Range(0, 5);
+                    if (spawn == 0)
+                    {
+                        AITypeToSpawn(x, y);
+                    }
+                }
 
                 Tile.transform.SetParent(transform, true);
                 
@@ -188,6 +182,7 @@ public class GameMap : MonoBehaviour
             }
         }
         GameManager.Main.MakeIntOrder();
+        GameManager.Main.UISetUp();
     }
 
     public Vector3 GetPositionFromCoordinate(Vector2Int Coordinate)
@@ -247,6 +242,129 @@ public class GameMap : MonoBehaviour
         }
     }
 
+    void AITypeToSpawn(int x, int y)
+    {
+        int spawn = Random.Range(0, 5);
+        switch(spawn)
+        {
+            case 0:
+                var temp = Instantiate(AiArcher, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp.transform.SetParent(transform, true);
+                UnitBaseClass unit = temp.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit);
+                unit.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit.AIID = EnemiesSpawned;
+                break;
+            case 1:
+                var temp1 = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp1.transform.SetParent(transform, true);
+                UnitBaseClass unit1 = temp1.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit1);
+                unit1.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit1.AIID = EnemiesSpawned;
+                break;
+            case 2:
+                var temp2 = Instantiate(AiRogue, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp2.transform.SetParent(transform, true);
+                UnitBaseClass unit2 = temp2.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit2);
+                unit2.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit2.AIID = EnemiesSpawned;
+                break;
+            case 3:
+                var temp3 = Instantiate(AiTank, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp3.transform.SetParent(transform, true);
+                UnitBaseClass unit3 = temp3.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit3);
+                unit3.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit3.AIID = EnemiesSpawned;
+                break;
+            case 4:
+                var temp4 = Instantiate(AiMage, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp4.transform.SetParent(transform, true);
+                UnitBaseClass unit4 = temp4.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit4);
+                unit4.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit4.AIID = EnemiesSpawned;
+                break;
+            default:
+                var temp5 = Instantiate(AiWarrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp5.transform.SetParent(transform, true);
+                UnitBaseClass unit5 = temp5.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit5);
+                unit5.Pos = new Vector2Int(x, y);
+                EnemiesSpawned++;
+                unit5.AIID = EnemiesSpawned;
+                break;
+        }
+    }
+
+    void PlayerTypeToSpawn(int x, int y)
+    {
+        int spawn = Random.Range(0, 5);
+        switch (spawn)
+        {
+            case 0:
+                var temp = Instantiate(Archer, GetPositionFromCoordinate(new Vector2Int(x, y)) + new Vector3(0, 2, -1), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp.transform.SetParent(transform, true);
+                UnitBaseClass unit = temp.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit);
+                unit.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit.PlayerID = PlayerSpawned;
+                break;
+            case 1:
+                var temp1 = Instantiate(Warrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp1.transform.SetParent(transform, true);
+                UnitBaseClass unit1 = temp1.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit1);
+                unit1.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit1.PlayerID = PlayerSpawned;
+                break;
+            case 2:
+                var temp2 = Instantiate(Rogue, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp2.transform.SetParent(transform, true);
+                UnitBaseClass unit2 = temp2.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit2);
+                unit2.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit2.PlayerID = PlayerSpawned;
+                break;
+            case 3:
+                var temp3 = Instantiate(Tank, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp3.transform.SetParent(transform, true);
+                UnitBaseClass unit3 = temp3.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit3);
+                unit3.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit3.PlayerID = PlayerSpawned;
+                break;
+            case 4:
+                var temp4 = Instantiate(Mage, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp4.transform.SetParent(transform, true);
+                UnitBaseClass unit4 = temp4.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit4);
+                unit4.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit4.PlayerID = PlayerSpawned;
+                break;
+            default:
+                var temp5 = Instantiate(Warrior, GetPositionFromCoordinate(new Vector2Int(x, y)), Quaternion.Euler(new Vector3(0, 180, 0)));
+                temp5.transform.SetParent(transform, true);
+                UnitBaseClass unit5 = temp5.GetComponent<UnitBaseClass>();
+                GameManager.Main.UnitSetUp(unit5);
+                unit5.Pos = new Vector2Int(x, y);
+                PlayerSpawned++;
+                unit5.PlayerID = PlayerSpawned;
+                break;
+        }
+    }
 
     public GameObject FindWaypoint(Vector2Int pos)
     {

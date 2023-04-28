@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class UnitBaseClass : MonoBehaviour
 {
+    public Sprite Avatar;
+    public int PlayerID = 0;
+    public int AIID = 0;
     public int Initiative = 0;
     public int AttackRange = 0;
     public int Health = 0;
-    protected int MaxHealth = 100;
+    public int MaxHealth = 100;
     public string UnitType = "";
     public string TileEffect = "";
     /* Effect list:
@@ -59,11 +62,28 @@ public class UnitBaseClass : MonoBehaviour
         if(!Ranged && TileEffect == "Sand" && UnitType != "Rogue")
         {
             Health -= damage + (damage/2);
+            if(PlayerUnit)
+            {
+                GameManager.Main.SetHealthSlider(PlayerID, Health, PlayerUnit);
+            }
+            else
+            {
+                GameManager.Main.SetHealthSlider(AIID, Health, PlayerUnit);
+            }
+            
         }
         else
         {
             Health -= damage - DamageReduction;
             DamageReduction = 0;
+            if (PlayerUnit)
+            {
+                GameManager.Main.SetHealthSlider(PlayerID, Health, PlayerUnit);
+            }
+            else
+            {
+                GameManager.Main.SetHealthSlider(AIID, Health, PlayerUnit);
+            }
         }
         if (Health <= 0)
         {
