@@ -40,6 +40,7 @@ public class RogueAIBehaviour : TreeActions
 
         //Making the tree with adding all the nodes under one a child of the node, the numbers show what level the node is on so 0 being connected to root level with a node bing 3 needing to move up 3 nodes to get to the root level.
         /* 1 */GetNearestPlayerUnit.AddChild(FindTarget);
+        /* 1 */GetNearestPlayerUnit.AddChild(GetDistanceFromTarget);
         /* 1 */GetNearestPlayerUnit.AddChild(CloseEnoughToAttack);
         /* 2 */CloseEnoughToAttack.AddChild(AttackWithSkipMovement);
         /* 3 */AttackWithSkipMovement.AddChild(CanAttackWithoutEndTurn);

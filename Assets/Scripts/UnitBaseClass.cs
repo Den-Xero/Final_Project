@@ -97,6 +97,7 @@ public class UnitBaseClass : MonoBehaviour
             }
             Alive = false;
             this.gameObject.SetActive(false);
+            GameManager.Main.TurnTrackerUpdate();
         }
     }
 
@@ -135,6 +136,16 @@ public class UnitBaseClass : MonoBehaviour
             this.transform.rotation = Quaternion.Slerp(this.transform.rotation, Last, RotateSpeed * Time.deltaTime);
 
             this.transform.Translate(0, 0, Speed * Time.deltaTime);
+
+            if(PlayerUnit && UnitType == "Archer")
+            {
+                transform.position = GameManager.Main.GameBoard.GetPositionFromCoordinate(Pos) + new Vector3(0, 2, -1);
+            }
+            else
+            {
+                transform.position = GameManager.Main.GameBoard.GetPositionFromCoordinate(Pos);
+            }
+            transform.rotation = Quaternion.Euler(0, -180, 0);
 
             return TreeNodes.Status.SUCCESS;
         }

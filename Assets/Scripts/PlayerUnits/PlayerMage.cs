@@ -9,4 +9,24 @@ public class PlayerMage : UnitBaseClass
         MageSetUp();
         PlayerUnit = true;
     }
+
+    public override void UpdateLoop()
+    {
+        if (Action) return;
+        if (Moved)
+        {
+            if (!GameManager.Main.AStar.Done && Attacking)
+            {
+                Attack();
+            }
+            return;
+        }
+
+        MoveSetUp();
+
+        if (!Moved) Move();
+
+    }
+
+
 }

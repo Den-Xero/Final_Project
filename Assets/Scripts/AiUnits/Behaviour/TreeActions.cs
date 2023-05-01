@@ -249,7 +249,15 @@ public class TreeActions : MonoBehaviour
                 foreach (Vector2Int dir in GameManager.Main.GameBoard.PointTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.Coords;
-                    TargetNeighbour.Push(neighbour);
+                    bool IsTaken = false;
+                    foreach(UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                    {
+                        if( unit.Pos == neighbour)
+                        {
+                            IsTaken = true;
+                        }
+                    }
+                    if (!IsTaken) TargetNeighbour.Push(neighbour);
 
                 }
 
@@ -259,7 +267,15 @@ public class TreeActions : MonoBehaviour
                 foreach (Vector2Int dir in GameManager.Main.GameBoard.PointTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.Coords;
-                    TargetNeighbour.Push(neighbour);
+                    bool IsTaken = false;
+                    foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                    {
+                        if (unit.Pos == neighbour)
+                        {
+                            IsTaken = true;
+                        }
+                    }
+                    if (!IsTaken) TargetNeighbour.Push(neighbour);
 
                 }
 
@@ -272,7 +288,15 @@ public class TreeActions : MonoBehaviour
                 foreach (Vector2Int dir in GameManager.Main.GameBoard.FlatTopOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.Coords;
-                    TargetNeighbour.Push(neighbour);
+                    bool IsTaken = false;
+                    foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                    {
+                        if (unit.Pos == neighbour)
+                        {
+                            IsTaken = true;
+                        }
+                    }
+                    if (!IsTaken) TargetNeighbour.Push(neighbour);
 
                 }
 
@@ -282,7 +306,15 @@ public class TreeActions : MonoBehaviour
                 foreach (Vector2Int dir in GameManager.Main.GameBoard.FlatTopNoOffsetNeighbours)
                 {
                     Vector2Int neighbour = dir + ThisHex.Coords;
-                    TargetNeighbour.Push(neighbour);
+                    bool IsTaken = false;
+                    foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                    {
+                        if (unit.Pos == neighbour)
+                        {
+                            IsTaken = true;
+                        }
+                    }
+                    if (!IsTaken) TargetNeighbour.Push(neighbour);
 
                 }
 
@@ -322,7 +354,10 @@ public class TreeActions : MonoBehaviour
     {
         Debug.Log("Attack and end turn " + GameManager.Main.CurrentActiveUnit.name);
         GameManager.Main.AStar.BeginSearch(GameManager.Main.GameBoard.FindHex(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos));
-        return GameManager.Main.CurrentActiveUnit.Attack();
+        TreeNodes.Status status = GameManager.Main.CurrentActiveUnit.Attack();
+        if (status == TreeNodes.Status.RUNNING) return TreeNodes.Status.RUNNING;
+        if (status == TreeNodes.Status.FAILURE) return TreeNodes.Status.FAILURE;
+        return GameManager.Main.EndTurn();
     }
 
     protected TreeNodes.Status FSetAsMoved()
@@ -382,30 +417,51 @@ public class TreeActions : MonoBehaviour
         
         if(TempCurrentMovementCost > GameManager.Main.CurrentActiveUnit.MovementPoints)
         {
+            if (TempWaypointList.Count == 0) return GameManager.Main.SetAsMoved();
+            if(!DoOnce)
+            {
+                DoOnce = true;
+                GameObject X = TempWaypointList[TempWaypointList.Count - 1];
+                Hex hex = X.GetComponentInParent<Hex>();
+                foreach(UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                {
+                    if(unit.Pos == hex.Coords)
+                    {
+                        TempWaypointList.RemoveAt(TempWaypointList.Count - 1);
+                        DoOnce = false;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                Debug.LogError("In waypoint stack Final " + GameManager.Main.AStar.waypoint.Count);
+                Debug.LogError("In temp waypoint list Final " + TempWaypointList.Count);
+                GameManager.Main.AStar.waypoint.Clear();
+                GameManager.Main.AStar.RemoveAllMarkers();
+                Debug.LogError("In waypoint stack after clear " + GameManager.Main.AStar.waypoint.Count);
+
+                for (int i = TempWaypointList.Count - 1; i >= 0; i--)
+                    GameManager.Main.AStar.waypoint.Push(TempWaypointList[i]);
+
+
+                Debug.LogError("In waypoint stack New " + GameManager.Main.AStar.waypoint.Count);
+                Debug.LogError("In temp waypoint list New " + TempWaypointList.Count);
+
+                GameManager.Main.CurrentActiveUnit.MovementPointsUsed = CurrentMovementCost;
+                GameManager.Main.AStar.Pathway = true;
+                GameManager.Main.CurrentActiveUnit.CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
+                DoOncePath = false;
+                Finished = false;
+
+                TempWaypointList.Clear();
+                TempCurrentMovementCost = 0;
+                CurrentMovementCost = 0;
+                return Move();
+            }
             Finished = true;
-            Debug.LogError("In waypoint stack Final " + GameManager.Main.AStar.waypoint.Count);
-            Debug.LogError("In temp waypoint list Final " + TempWaypointList.Count);
-            GameManager.Main.AStar.waypoint.Clear();
-            GameManager.Main.AStar.RemoveAllMarkers();
-            Debug.LogError("In waypoint stack after clear " + GameManager.Main.AStar.waypoint.Count);
+            return TreeNodes.Status.RUNNING;
 
-            for (int i = TempWaypointList.Count - 1; i >= 0; i--)
-                GameManager.Main.AStar.waypoint.Push(TempWaypointList[i]);
-          
-
-            Debug.LogError("In waypoint stack New " + GameManager.Main.AStar.waypoint.Count);
-            Debug.LogError("In temp waypoint list New " + TempWaypointList.Count);
-
-            GameManager.Main.CurrentActiveUnit.MovementPointsUsed = CurrentMovementCost;
-            GameManager.Main.AStar.Pathway = true;
-            GameManager.Main.CurrentActiveUnit.CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
-            DoOncePath = false;
-            Finished = false;
-            
-            TempWaypointList.Clear();
-            TempCurrentMovementCost = 0;
-            CurrentMovementCost = 0;
-            return Move();
         }
         CurrentMovementCost = TempCurrentMovementCost;
         TempWaypointList.Add(point);
@@ -446,6 +502,7 @@ public class TreeActions : MonoBehaviour
 
         if (TempCurrentMovementCost > GameManager.Main.CurrentActiveUnit.MovementPoints - 2)
         {
+            if (TempWaypointList.Count == 0) return TreeNodes.Status.FAILURE;
             Finished = true;
             Debug.LogError("In waypoint stack Final " + GameManager.Main.AStar.waypoint.Count);
             Debug.LogError("In temp waypoint list Final " + TempWaypointList.Count);
@@ -455,38 +512,56 @@ public class TreeActions : MonoBehaviour
 
             if (!DoOnce)
             {
-                GameManager.Main.AStar.BeginSearchWithStartpoint(TempWaypointList[TempWaypointList.Count - 1].GetComponentInParent<Hex>(), GameManager.Main.GameBoard.FindHex(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos));
                 DoOnce = true;
-            }
+                GameObject X = TempWaypointList[TempWaypointList.Count - 1];
+                Hex hex = X.GetComponentInParent<Hex>();
+                foreach (UnitBaseClass unit in GameManager.Main.UnitIntOrder)
+                {
+                    if (unit.Pos == hex.Coords)
+                    {
+                        TempWaypointList.RemoveAt(TempWaypointList.Count - 1);
+                        DoOnce = false;
+                        break;
+                    }
+                }
 
-            TreeNodes.Status status = GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, GameManager.Main.CurrentActiveUnit.AttackRange, false);
-            if (status == TreeNodes.Status.RUNNING) return TreeNodes.Status.RUNNING;
-            if (status == TreeNodes.Status.FAILURE)
+                if(DoOnce) GameManager.Main.AStar.BeginSearchWithStartpoint(TempWaypointList[TempWaypointList.Count - 1].GetComponentInParent<Hex>(), GameManager.Main.GameBoard.FindHex(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos));
+                
+            }
+            else
             {
-                Debug.Log("Not close enough to attack" + GameManager.Main.CurrentActiveUnit.name);
-                GameManager.Main.AStar.Incomplete = false;
+                TreeNodes.Status status = GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, GameManager.Main.CurrentActiveUnit.AttackRange, false);
+                if (status == TreeNodes.Status.RUNNING) return TreeNodes.Status.RUNNING;
+                if (status == TreeNodes.Status.FAILURE)
+                {
+                    Debug.Log("Not close enough to attack" + GameManager.Main.CurrentActiveUnit.name);
+                    GameManager.Main.AStar.Incomplete = false;
+                    GameManager.Main.AStar.SearchStarted = false;
+                    DoOncePath = false;
+                    DoOnce = false;
+                    Finished = false;
+                    TempWaypointList.Clear();
+                    return TreeNodes.Status.FAILURE;
+                }
+                Debug.Log("close enough to attack " + GameManager.Main.CurrentActiveUnit.name);
+                for (int i = TempWaypointList.Count - 1; i >= 0; i--)
+                    GameManager.Main.AStar.waypoint.Push(TempWaypointList[i]);
+
+                GameManager.Main.CurrentActiveUnit.MovementPointsUsed = CurrentMovementCost;
+                GameManager.Main.AStar.Pathway = true;
+                GameManager.Main.CurrentActiveUnit.CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
                 DoOncePath = false;
                 DoOnce = false;
                 Finished = false;
+                Debug.LogError("In waypoint stack New " + GameManager.Main.AStar.waypoint.Count);
+                Debug.LogError("In temp waypoint list New " + TempWaypointList.Count);
                 TempWaypointList.Clear();
-                return TreeNodes.Status.FAILURE;
+                TempCurrentMovementCost = 0;
+                CurrentMovementCost = 0;
+                return Move();
             }
-            Debug.Log("close enough to attack " + GameManager.Main.CurrentActiveUnit.name);
-            for (int i = TempWaypointList.Count - 1; i >= 0; i--)
-                GameManager.Main.AStar.waypoint.Push(TempWaypointList[i]);
-            
-            GameManager.Main.CurrentActiveUnit.MovementPointsUsed = CurrentMovementCost;
-            GameManager.Main.AStar.Pathway = true;
-            GameManager.Main.CurrentActiveUnit.CurrentWaypoint = GameManager.Main.AStar.waypoint.Pop();
-            DoOncePath = false;
-            DoOnce = false;
-            Finished = false;
-            Debug.LogError("In waypoint stack New " + GameManager.Main.AStar.waypoint.Count);
-            Debug.LogError("In temp waypoint list New " + TempWaypointList.Count);
-            TempWaypointList.Clear();
-            TempCurrentMovementCost = 0;
-            CurrentMovementCost = 0;
-            return Move();
+            return TreeNodes.Status.RUNNING;
+
         }
         CurrentMovementCost = TempCurrentMovementCost;
         TempWaypointList.Add(point);
@@ -567,43 +642,45 @@ public class TreeActions : MonoBehaviour
                 if (InRange[i].Effect == "Mountain") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
             }
         }
-
-        for(int i = 1; i < InRange.Count; i++)
+        else
         {
-            if (InRange[i].Effect == "Water") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
-        }
+            for (int i = 1; i < InRange.Count; i++)
+            {
+                if (InRange[i].Effect == "Water") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
+            }
 
-        if (InRange.Count == 0)
-        {
-            GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
-            return Move();
-        }
+            if (InRange.Count == 0)
+            {
+                GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
+                return Move();
+            }
 
-        for (int i = 1; i < InRange.Count; i++)
-        {
-            if (InRange[i].Effect == "Sand") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
-        }
+            for (int i = 1; i < InRange.Count; i++)
+            {
+                if (InRange[i].Effect == "Sand") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
+            }
 
-        if (InRange.Count == 0)
-        {
-            GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
-            return Move();
-        }
+            if (InRange.Count == 0)
+            {
+                GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
+                return Move();
+            }
 
-        for (int i = 1; i < InRange.Count; i++)
-        {
-            if (InRange[i].Effect == "Cobblestone" || InRange[i].Effect == "Dirt" || InRange[i].Effect == "Grassland") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
-        }
+            for (int i = 1; i < InRange.Count; i++)
+            {
+                if (InRange[i].Effect == "Cobblestone" || InRange[i].Effect == "Dirt" || InRange[i].Effect == "Grassland") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
+            }
 
-        if (InRange.Count == 0)
-        {
-            GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
-            return Move();
-        }
+            if (InRange.Count == 0)
+            {
+                GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
+                return Move();
+            }
 
-        for (int i = 1; i < InRange.Count; i++)
-        {
-            if (InRange[i].Effect == "Mountain") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
+            for (int i = 1; i < InRange.Count; i++)
+            {
+                if (InRange[i].Effect == "Mountain") BestHexOrdered.Push(InRange[i]); InRange.RemoveAt(i);
+            }
         }
 
         GameManager.Main.AStar.BeginSearch(BestHexOrdered.Pop());
