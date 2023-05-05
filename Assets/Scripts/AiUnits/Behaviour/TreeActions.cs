@@ -20,6 +20,7 @@ public class TreeActions : MonoBehaviour
     //Condition leaf.
     protected TreeNodes.Status FDistanceToTarget()
     {
+        //Finds the distnce to the target for attack and retreat check.
         Debug.Log("Find distance to target " + GameManager.Main.CurrentActiveUnit.name);
         if (!DoOnce)
         {
@@ -41,6 +42,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FFindClosestTarget()
     {
+        //Some AI target the closest player unit to them so this finds the close unit for them to target.
         Debug.Log("Start Find target " + GameManager.Main.CurrentActiveUnit.name);
         UnitBaseClass currentClosest = null;
         float currentClosestDistance = 100;
@@ -75,6 +77,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FFindTargetWithHighestHealth()
     {
+        //Mage attacks the player unit with the most current health, this will search though the unit list to find the player unit with the most health.
         UnitBaseClass currentHighest = null;
         float currentHighestHealth = 0;
 
@@ -108,6 +111,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FFindTargetWithLowestHealth()
     {
+        //Rogue attacks the player unit with the lowest health, this will search through the unit list to find the player unit with the lowest health.
         UnitBaseClass currentLowest = null;
         float currentLowestHealth = 0;
 
@@ -141,6 +145,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FFindClosestTargetToLowHealthAIUnit()
     {
+        //The tank tries to protect it friendly units so will search for the lowest health friendly unit the find the closes player unit to the friendly unit and set that as the target in a effort to help and protect them.
         UnitBaseClass currentLowestHealthTeamMate = null;
         float currentLowestHealth = 0;
         UnitBaseClass currentClosest = null;
@@ -199,6 +204,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FCanAttackWithEndTurn()
     {
+        //Checks if the AI can attack if so will if not will end the AI turn.
         Debug.Log("Can attack with end turn " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.CurrentActiveUnit.CanAttack() == TreeNodes.Status.SUCCESS)
         {
@@ -212,6 +218,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FCanAttackWithoutEndTurn()
     {
+        //Checks if the AI can attack if so will if not will move on to next node.
         Debug.Log("Can attack without end turn " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.CurrentActiveUnit.CanAttack() == TreeNodes.Status.SUCCESS)
         {
@@ -225,6 +232,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FMoveSoCanAttack()
     {
+        //AI will attempted to move so it can attack
         Debug.Log("Move So Can Attack " + GameManager.Main.CurrentActiveUnit.name);
         GameManager.Main.CurrentActiveUnit.Moved = true;
         GameManager.Main.AStar.BeginSearch(GameManager.Main.GameBoard.FindHex(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos));
@@ -234,7 +242,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FFindGoodHexToMoveTo()
     {
-        //Need to change this so that it see if unit has enough movement to get to the hex.
+        //AI will look for good hexes that it can move to.
         Debug.Log("Start Find good hex to move to " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.CurrentActiveUnit.AttackTargetDistance > GameManager.Main.CurrentActiveUnit.MovementPoints - 2 + GameManager.Main.CurrentActiveUnit.AttackRange)
         {
@@ -336,6 +344,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FMoveAwayFromTarget()
     {
+        //If target is too close to AI it will try to move away.
         Debug.Log("Start Move away " + GameManager.Main.CurrentActiveUnit.name);
         if (!GameManager.Main.AStar.SearchStarted)
         {
@@ -352,6 +361,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FAttackAndSetEndTurn()
     {
+        //AI will attack and then end its turn.
         Debug.Log("Attack and end turn " + GameManager.Main.CurrentActiveUnit.name);
         GameManager.Main.AStar.BeginSearch(GameManager.Main.GameBoard.FindHex(GameManager.Main.CurrentActiveUnit.AttackTarget.Pos));
         TreeNodes.Status status = GameManager.Main.CurrentActiveUnit.Attack();
@@ -362,18 +372,21 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FSetAsMoved()
     {
+        //AI acts as if it has moved without moving.
         Debug.Log("Set as moved " + GameManager.Main.CurrentActiveUnit.name);
         return GameManager.Main.SetAsMoved();
     }
 
     protected TreeNodes.Status FMove()
     {
+        //AI tries to move to a hex next to the target so that it can attack.
         Debug.Log("Moving " + GameManager.Main.CurrentActiveUnit.name);
         return FindHexesNextToTargetThatAreInMovementRange();
     }
 
     protected TreeNodes.Status FWorkBackFromTargetToFindHex()
     {
+        //Using target as the target will find the best path to follow and then move its max range on the path.
         if (!GameManager.Main.AStar.SearchStarted)
         {
             Debug.Log("Work back from hex " + GameManager.Main.CurrentActiveUnit.name);
@@ -386,6 +399,7 @@ public class TreeActions : MonoBehaviour
 
     protected TreeNodes.Status FReadyEndTurn()
     {
+        //AI ends turn.
         Debug.Log("Ready end turn " + GameManager.Main.CurrentActiveUnit.name);
         return GameManager.Main.EndTurn();
     }
@@ -393,6 +407,7 @@ public class TreeActions : MonoBehaviour
     
     TreeNodes.Status FindWorkBackHex()
     {
+        //Using target as the target will find the best path to follow and then move its max range on the path.
         Debug.Log("Find work back hex " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.AStar.Pathway) return Move();
         GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, 1000, true);
@@ -470,6 +485,7 @@ public class TreeActions : MonoBehaviour
 
     public TreeNodes.Status FMoveToAttack()
     {
+        //AI will attempted to move so it can attack
         Debug.Log("Move to attack " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.AStar.Pathway) return Move();
         if (!GameManager.Main.AStar.Done)
@@ -570,6 +586,7 @@ public class TreeActions : MonoBehaviour
 
     TreeNodes.Status FindHexesNextToTargetThatAreInMovementRange()
     {
+        //AI will look for good hexes next to its target to try and move to.
         Debug.Log("Find hexes next to target that are in range " + GameManager.Main.CurrentActiveUnit.name);
         if (GameManager.Main.AStar.Pathway) return Move();
         TreeNodes.Status result = GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, GameManager.Main.CurrentActiveUnit.MovementPoints, true);
@@ -689,6 +706,7 @@ public class TreeActions : MonoBehaviour
 
     TreeNodes.Status Move()
     {
+        //AI moves.
         Debug.Log("The movement private function " + GameManager.Main.CurrentActiveUnit.name);
 
         if (GameManager.Main.AStar.Pathway) return GameManager.Main.CurrentActiveUnit.Move();

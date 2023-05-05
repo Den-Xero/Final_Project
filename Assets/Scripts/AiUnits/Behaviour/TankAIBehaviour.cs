@@ -46,6 +46,7 @@ public class TankAIBehaviour: TreeActions
         /* 3 */AttackWithSkipMovement.AddChild(CanAttackWithoutEndTurn);
         /* 3 */AttackWithSkipMovement.AddChild(SetAsMoved);
         /* 3 */AttackWithSkipMovement.AddChild(AttackAndSetEndTurn);
+        /* 2 */CloseEnoughToAttack.AddChild(GetDistanceFromTarget);
         /* 2 */CloseEnoughToAttack.AddChild(MoveTowardsTarget);
         /* 3 */MoveTowardsTarget.AddChild(MoveToTarget);
         /* 4 */MoveToTarget.AddChild(FindGoodHexToMoveTo);
@@ -67,6 +68,7 @@ public class TankAIBehaviour: TreeActions
     // Update is called once per frame
     public void TreeUpdate()
     {
+        //Runs the tree.
         mRoot.Process();
     }
 }

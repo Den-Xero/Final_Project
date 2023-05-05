@@ -56,6 +56,7 @@ public class ArcherAIBehaviour : TreeActions
         /* 4 */AttackWithSkipMovement.AddChild(CanAttackWithoutEndTurn);
         /* 4 */AttackWithSkipMovement.AddChild(SetAsMoved);
         /* 4 */AttackWithSkipMovement.AddChild(AttackAndSetEndTurn);
+        /* 3 */CloseEnoughToAttack.AddChild(DistanceToTarget);
         /* 3 */CloseEnoughToAttack.AddChild(MoveTowardsTarget);
         /* 4 */MoveTowardsTarget.AddChild(MoveToTarget);
         /* 5 */MoveToTarget.AddChild(MoveSoCanAttack);
@@ -78,6 +79,7 @@ public class ArcherAIBehaviour : TreeActions
 
     public void TreeUpdate()
     {
+        //Runs the tree.
         mRoot.Process();
     }
 }

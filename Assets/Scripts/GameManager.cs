@@ -43,6 +43,7 @@ public class GameManager : MonoBehaviour
 
     public void UISetUp()
     {
+        //Set the UI up once all the objects have been spawned.
         int i = 0;
         foreach (UnitBaseClass unit in UnitIntOrder)
         {
@@ -74,6 +75,7 @@ public class GameManager : MonoBehaviour
 
     public void TurnTrackerUpdate()
     {
+        //Updates the turn tracker when a unit is taken out of the game.
         int i = 0;
         TurnTrackerArrow[CurrentActiveArrow].SetActive(false);
         foreach (UnitBaseClass unit in UnitIntOrder)
@@ -102,6 +104,7 @@ public class GameManager : MonoBehaviour
 
     public void SetHealthSlider(int ID, int Health, bool Player)
     {
+        //Updates the UI health bars to show what the units healths are at that moment.
         if(Player)
         {
             PlayerHealthbars[ID - 1].value = Health;
@@ -118,6 +121,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        //Makes it so only on of this script type can be in the level at any moment and gets some veribles stored.
         if(Main != null && Main != this)
         {
             Destroy(this);
@@ -132,11 +136,13 @@ public class GameManager : MonoBehaviour
 
     public void UnitSetUp(UnitBaseClass unit)
     {
+        //Added units to the turn order list.
         UnitIntOrder.Add(unit);
     }
 
     public void MakeIntOrder()
     {
+        //Makes the turn order list put the units in it in the right order.
         if (UnitIntOrder.Count > 0)
         {
             UnitIntOrder = UnitIntOrder.OrderByDescending(p => p.Initiative).ThenBy(n => n.PlayerUnit ? 0 : 1).ToList<UnitBaseClass>();
@@ -151,12 +157,7 @@ public class GameManager : MonoBehaviour
 
     public TreeNodes.Status EndTurn()
     {
-        if(!CurrentActiveUnit.Moved)
-        {
-            UnitNotMoved.SetActive(true);
-            TimeToDisappear = Time.time + TimeAcive;
-            return TreeNodes.Status.FAILURE;
-        }
+        //Ends the AI turn.
         End = true;
         CurrentActiveUnit.Moved = false;
         CurrentActiveUnit.Action = false;
@@ -175,6 +176,7 @@ public class GameManager : MonoBehaviour
 
     public void ButtonEndTurn()
     {
+        //Ends the player unit turn when button is clicked.
         if(!CurrentActiveUnit.PlayerUnit) return;
         if (!CurrentActiveUnit.Moved)
         {
@@ -199,12 +201,14 @@ public class GameManager : MonoBehaviour
 
     public void ButtonSetAsMoved()
     {
+        //Makes it so the player unit acts as if it has moved when button is clicked.
         if (!CurrentActiveUnit.PlayerUnit) return;
         CurrentActiveUnit.Moved = true;
     }
 
     public TreeNodes.Status SetAsMoved()
     {
+        //Makes it so the AI unit acts as if it has moved.
         CurrentActiveUnit.Moved = true;
         if (CurrentActiveUnit.Moved) return TreeNodes.Status.SUCCESS;
         return TreeNodes.Status.FAILURE;
@@ -214,8 +218,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Only runs when all objects are in the level.
         if(!StarGame) return;
+        //Makes text disapear after set time.
         if(UnitNotMoved.active && Time.time >= TimeToDisappear) UnitNotMoved.SetActive(false);
+        //Checks if game is over and if it is a player or AI win.
         int playerUnitsAlive = 0;
         int aiUnitsAlive = 0;
         foreach (UnitBaseClass unit in UnitIntOrder)
@@ -237,6 +244,7 @@ public class GameManager : MonoBehaviour
         {
             SceneManager.LoadScene("WinScene");
         }
+        //Ends turn and moves on to the next unit in the turn order.
         if (End)
         {
             if (UnitIntOrder.Count <= CurrentOrderNum + 1)
@@ -252,6 +260,7 @@ public class GameManager : MonoBehaviour
                 End = false;
             }
         }
+        //Runs the current unit update loop.
         UnitIntOrder[CurrentOrderNum].UpdateLoop();
 
     }

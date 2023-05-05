@@ -4,6 +4,7 @@ using UnityEngine;
 
 public struct SideFaces
 {
+    //The Hex faces struct for drawing.
     public List<Vector3> Vertices { get; private set; }
     public List<int> Triangles { get; private set; }
     public List<Vector2> UVS { get; private set; }
@@ -41,6 +42,7 @@ public class Hex : MonoBehaviour
     public Material Mat;
     public void SetMesh(Material mat)
     {
+        //Sets the Mesh that the Hex that is being created will use.
         Mat = mat;
         m_MeshFilter = GetComponent<MeshFilter>();
         m_MeshRenderer = GetComponent<MeshRenderer>();
@@ -58,6 +60,7 @@ public class Hex : MonoBehaviour
 
     protected Vector3 GetPoint(float Size, float Height, int Index)
     {
+        //Small function to get the points for a hex face with the inputed numbers.
         float AngleDeg = FlatTop ? 60 * Index: 60 * Index - 30;
         float AngleRad = Mathf.PI / 180f * AngleDeg;
         return new Vector3(Size * Mathf.Cos(AngleRad), Height, Size * Mathf.Sin(AngleRad));
@@ -65,6 +68,7 @@ public class Hex : MonoBehaviour
 
     private SideFaces CreateSideFaces(float InnerRad, float OuterRad, float HeightA, float HeightB, int Point, bool Reverse = false)
     {
+        //automated function to get the vertices, triangles and uvs for making the hex faces using inputed values.
         Vector3 PointA = GetPoint(InnerRad, HeightB, Point);
         Vector3 PointB = GetPoint(InnerRad, HeightB, (Point < 5) ? Point + 1 : 0);
         Vector3 PointC = GetPoint(OuterRad, HeightA, (Point < 5) ? Point + 1 : 0);
@@ -81,40 +85,16 @@ public class Hex : MonoBehaviour
         return new SideFaces(Vertices, Triangles, UVS);
     }
 
-    private void Awake()
-    {
-        m_MeshFilter = GetComponent<MeshFilter>();
-        m_MeshRenderer = GetComponent<MeshRenderer>();
-
-        m_Mesh = new Mesh();
-        m_Mesh.name = "Hex";
-
-        m_MeshFilter.mesh = m_Mesh;
-        m_MeshRenderer.material = Mat;
-        DrawMesh();
-    }
-
-    private void OnEnable()
-    {
-        
-    }
-
-    public void OnValidate()
-    {
-        //if (Application.isPlaying)
-        //{
-        //    DrawMesh();
-        //}
-    }
-
     public void DrawMesh()
     {
+        //gets the faces then combines and draws them.
         DrawSideFaces();
         CombineSideFaces();
     }
 
     private void DrawSideFaces()
     {
+        //Addes the faces to a list.
         m_Faces = new List<SideFaces>();
 
         //Top face
@@ -144,6 +124,7 @@ public class Hex : MonoBehaviour
 
     private void CombineSideFaces()
     {
+        //Goes through the list of faces to combine and draw them.
         List<Vector3> Vertices = new List<Vector3>();
         List<int> Tri = new List<int>();
         List<Vector2> UVS = new List<Vector2>();

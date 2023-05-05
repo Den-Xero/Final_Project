@@ -5,6 +5,7 @@ using System.Linq;
 
 public class PathMarker
 {
+    //A class for the path markers used in traking the paths and key locations.
     public Vector2Int HexLocation;
     public float G;
     public float H;
@@ -96,6 +97,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public void RemoveAllMarkers()
     {
+        //Removes all the markers that are in the level.
         GameObject[] marker = GameObject.FindGameObjectsWithTag("Marker");
         foreach (GameObject m in marker) Destroy(m);
     }
@@ -103,6 +105,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public void BeginSearch(Hex goal)
     {
+        //First half of the pathfinding code that sets the start and end location as will as adds the first marker to search from in.
         Done = false;
         RemoveAllMarkers();
 
@@ -130,6 +133,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public void BeginSearchWithStartpoint(Hex start,Hex goal)
     {
+        //Same as other begin search but with a start point that can be inputted and not using the units pos.
         RemoveAllMarkers();
 
         Vector3 startHex = start.transform.position;
@@ -148,6 +152,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public void MoveAwayStart()
     {
+        //begin search with out the end point for when the end location is unknown.
         Vector3 startHex = m_GameMap.GetPositionFromCoordinate(GameManager.Main.CurrentActiveUnit.Pos);
         StartHex = new PathMarker(GameManager.Main.CurrentActiveUnit.Pos, 0, 0, 0, 0, Instantiate(StartMarker, startHex, Quaternion.identity), null);
         Open.Clear();
@@ -158,6 +163,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public TreeNodes.Status FindMoveAway(PathMarker ThisHex, int MaxMovement, bool TFirst)
     {
+        //Pathfinding code for when the end location is not know and we are trying to get all the possable end locations.
         if (ThisHex == null) return TreeNodes.Status.FAILURE;
         
         if (!m_GameMap.FlatTop)
@@ -315,10 +321,12 @@ public class AStarPathfinding : MonoBehaviour
 
     public TreeNodes.Status PathFinding(PathMarker ThisHex, int MaxMovement, bool TFirst)
     {
+
+        //pathfinding code that uses A* with a cost sometime to find best path the unit can take.
         if (ThisHex == null) return TreeNodes.Status.FAILURE;
         if (ThisHex.HexLocation == GoalHex.HexLocation) { Done = true; return TreeNodes.Status.SUCCESS; } // goal has been reached.
-        //if (Open.Count == 0) { Debug.Log("End location out of movement range."); Incomplete = true; }
 
+        //Finds the hex they are checking neigbours.
         if(!m_GameMap.FlatTop)
         {
             if(ThisHex.HexLocation.y % 2 == 0)
@@ -429,6 +437,7 @@ public class AStarPathfinding : MonoBehaviour
                 
             }
         }
+        //If empty then path can not be found.
         if (Open.Count == 0) 
         { 
             Debug.Log("End location out of movement range."); 
@@ -437,6 +446,7 @@ public class AStarPathfinding : MonoBehaviour
             return TreeNodes.Status.FAILURE;  
         }
 
+        //Orders based on if we want cost of tile to matter or not.
         if (TFirst)
         {
             Open = Open.OrderBy(p => p.TotalCostOfMove).ThenBy(n => n.F).ThenBy(g => g.H).ToList<PathMarker>();
@@ -456,6 +466,7 @@ public class AStarPathfinding : MonoBehaviour
 
     bool MarkerNeedUpdate(Vector2Int pos, float g, float h, float f, int t, PathMarker par)
     {
+        //See the marker that is in the open list already and if so if it needs it values changing to better ones. 
         foreach (PathMarker p in Open)
         {
             if(p.HexLocation == pos)
@@ -480,6 +491,7 @@ public class AStarPathfinding : MonoBehaviour
 
     bool IsInClosed(Vector2Int pos)
     {
+        //See if the marker is already in the closed list.
         foreach(PathMarker p in Closed)
         {
             if(p.HexLocation == pos) return true;
@@ -490,6 +502,7 @@ public class AStarPathfinding : MonoBehaviour
 
     public int GetPathway()
     {
+        //Gets the pathway that the unit will follow for movement.
         RemoveAllMarkers();
         PathMarker Marker = LastPos;
         waypoint.Clear();
@@ -509,9 +522,4 @@ public class AStarPathfinding : MonoBehaviour
         return LastPos.TotalCostOfMove;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

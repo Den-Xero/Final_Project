@@ -43,6 +43,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
+        //Applies damage to unit based on how much the attacker does and what type of unit the defender is and what tile they are on.
         if (!Ranged && TileEffect == "Mountain" || UnitType == "Rogue" && TileEffect == "Sand")
         {
             if(Random.value <= PercentChance)
@@ -103,7 +104,8 @@ public class UnitBaseClass : MonoBehaviour
 
     protected void MoveSetUp()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) StartFindingPath = true;
+        //Waits for player to click on the board to select where they want to go to then press space to confirm that is where they want to move.
+        if (Input.GetKeyDown(KeyCode.Space) && GameManager.Main.AStar.SearchStarted) StartFindingPath = true;
         if (StartFindingPath && !GameManager.Main.AStar.Done && !GameManager.Main.AStar.Incomplete) GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, MovementPoints, true);
         if (GameManager.Main.AStar.Done && !GameManager.Main.AStar.Pathway)
         {
@@ -115,7 +117,9 @@ public class UnitBaseClass : MonoBehaviour
 
     public TreeNodes.Status Move()
     {
+        //If Setup is not done then movement will not work.
         if (!GameManager.Main.AStar.Pathway) return TreeNodes.Status.FAILURE;
+        //Moves unit to next hex on path once there gets then next hex to move to for next run of code, if at end will reorient its self so it is in the middle of hex and faceing the right way.
         if (Vector3.Distance(this.transform.position, CurrentWaypoint.transform.position + new Vector3(0, 2, -1)) < 0.2 && GameManager.Main.AStar.waypoint.Count > 0)
         {
             Pos = GameManager.Main.AStar.coords.Pop();
@@ -162,6 +166,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public TreeNodes.Status CanAttack()
     {
+        //Checks if the unit can attack based on the tile they are on, how much they have moved this turn and how far the unit they are trying to attack is from them.
         if(TileEffect == "Water") return TreeNodes.Status.FAILURE;
         if (MovementPointsUsed > MovementPoints - 2)
         {
@@ -204,6 +209,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public TreeNodes.Status RangeCheckToTarget()
     {
+        //Calculates the distance the target is away form the unit for checking attack.
         GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, 10000, false);
 
         if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
@@ -232,6 +238,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public TreeNodes.Status MeleeCheckToTarget()
     {
+        //Calculates the distance the target is away form the unit for checking attack.
         GameManager.Main.AStar.PathFinding(GameManager.Main.AStar.LastPos, 10000, false);
 
         if (!GameManager.Main.AStar.Done) return TreeNodes.Status.RUNNING;
@@ -252,6 +259,7 @@ public class UnitBaseClass : MonoBehaviour
 
     public TreeNodes.Status Attack()
     {
+        //Attacks target.
         GameManager.Main.AStar.RemoveAllMarkers();
         AttackTarget.TakeDamage(AttackDamage);
         print("Target hit");
@@ -260,7 +268,7 @@ public class UnitBaseClass : MonoBehaviour
         return TreeNodes.Status.SUCCESS;
     }
 
-
+    //The different unit type set ups.
     protected void TankSetUp()
     {
         Initiative = 1;
@@ -290,7 +298,7 @@ public class UnitBaseClass : MonoBehaviour
         Initiative = 2;
         MovementPoints = 3;
         AttackRange = 8;
-        AttackDamage = 25;
+        AttackDamage = 35;
         MaxHealth = 80;
         Health = MaxHealth;
         Ranged = true;

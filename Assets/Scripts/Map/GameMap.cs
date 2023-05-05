@@ -42,12 +42,6 @@ public class GameMap : MonoBehaviour
         Random.InitState(Random.Range(0, Int32.MaxValue));
     }
 
-    private void OnValidate()
-    {
-        //Random.InitState(Random.Range(0, Int32.MaxValue));
-        //Clear();
-        //DrawGrid();
-    }
     [Header("Offsets")]
     public List<Vector2Int> PointTopNoOffsetNeighbours = new List<Vector2Int>() { 
         new Vector2Int(0,1),
@@ -84,6 +78,7 @@ public class GameMap : MonoBehaviour
 
     public void DrawGrid()
     {
+        //Draws the grid with all the player and AI units on a random range of spawn tiles.
         PlayerSpawned = 0;
         EnemiesSpawned = 0;
         for (int y = 0; y < GridSize.y; y++)
@@ -187,6 +182,7 @@ public class GameMap : MonoBehaviour
 
     public Vector3 GetPositionFromCoordinate(Vector2Int Coordinate)
     {
+        //This uses the vector 2 that all the game objects store and makes them in to vector 3 for translation of in game changes.
         int Column = Coordinate.x;
         int Row = Coordinate.y;
         float Width;
@@ -233,6 +229,7 @@ public class GameMap : MonoBehaviour
 
     public void Clear()
     {
+        //Clears the grid.
         for (var i = this.transform.childCount; i > 0; i-- )
         {
             UnityEditor.EditorApplication.delayCall += () =>
@@ -244,6 +241,7 @@ public class GameMap : MonoBehaviour
 
     void AITypeToSpawn(int x, int y)
     {
+        //Randomly chooses a AI type to spawn at the triggered spawn location.
         int spawn = Random.Range(0, 5);
         switch(spawn)
         {
@@ -306,6 +304,7 @@ public class GameMap : MonoBehaviour
 
     void PlayerTypeToSpawn(int x, int y)
     {
+        //Randomly chooses a Player unit type to spawn at the triggered spawn location.
         int spawn = Random.Range(0, 5);
         switch (spawn)
         {
@@ -368,6 +367,7 @@ public class GameMap : MonoBehaviour
 
     public GameObject FindWaypoint(Vector2Int pos)
     {
+        //Finds the waypoint at the vector 2 location inputted.
         Hex[] hexes = this.transform.GetComponentsInChildren<Hex>();
         foreach (Hex h in hexes)
         {
@@ -380,6 +380,7 @@ public class GameMap : MonoBehaviour
 
     public int GetMovementCost(Vector2Int pos)
     {
+        //Finds the movement cost of the hex at the vector 2 location inputted.
         Hex[] hexes = this.transform.GetComponentsInChildren<Hex>();
         foreach (Hex h in hexes)
         {
@@ -392,6 +393,7 @@ public class GameMap : MonoBehaviour
 
     public Hex FindHex(Vector2Int pos)
     {
+        //Finds the hex at the vector 2 location inputted.
         Hex[] hexes = this.transform.GetComponentsInChildren<Hex>();
         foreach (Hex h in hexes)
         {
