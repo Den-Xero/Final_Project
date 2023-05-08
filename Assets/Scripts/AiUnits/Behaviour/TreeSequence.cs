@@ -20,8 +20,11 @@ public class TreeSequence : TreeNodes
         Status ChildStatus = Children[CurrentChild].Process();
         if(ChildStatus == Status.RUNNING) return Status.RUNNING;
         //if complete check if the node failed, if it did returns that so the tree knows that the sequence has failed.
-        if (ChildStatus == Status.FAILURE) return ChildStatus;
-
+        if (ChildStatus == Status.FAILURE)
+        {
+            CurrentChild = 0;
+            return ChildStatus;
+        }
         //if node was seccessful then it will move on to the next child.
         CurrentChild++;
         //check if it has hit the end of the sequence's children.
